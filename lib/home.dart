@@ -23,13 +23,11 @@ class _HomeSelectState extends State<HomeSelect> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SingleChildScrollView(
-              child: Selector(betCompany),
-            ),
+            Expanded(child: Selector(betCompany)),
             RaisedButton(
               child: Text('Continue'),
-              onPressed: () => proceed,
-            )
+              onPressed: () => proceed(),
+            ),
           ],
         ),
       ),
@@ -43,10 +41,11 @@ class _HomeSelectState extends State<HomeSelect> {
       }
     });
     if (selected.isNotEmpty) {
-      selected.toSet();
-      print(selected);
-      return Navigator.push(context,
-          MaterialPageRoute(builder: (context) => BetScreen(selected)));
+      print(selected.toSet().toList());
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BetScreen(selected.toSet().toList())));
     } else {
       // snackbar
     }
