@@ -1,7 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class BetDataScreen extends StatefulWidget {
   final String company;
@@ -78,12 +79,35 @@ class _BetDataScreenState extends State<BetDataScreen> {
                             Text('${snapshot.data[index]['slipcode']}'),
                           ],
                         ),
-                        subtitle: Row(
+                        subtitle: Column(
                           children: [
-                            Text('Odds: '),
-                            Text('${snapshot.data[index]['odds']}'),
+                            Row(
+                              children: [
+                                Text('Odds: '),
+                                Text('${snapshot.data[index]['odds']}'),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text('Type: '),
+                                Text('${snapshot.data[index]['type']}'),
+                              ],
+                            ),
                           ],
                         ),
+                        onTap: () {
+                          Fluttertoast.showToast(
+                              msg: "Copied to clipboard!",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.red,
+                              textColor: Colors.white,
+                              fontSize: 16.0);
+
+                          Clipboard.setData(new ClipboardData(
+                              text: "${snapshot.data[index]['odds']}"));
+                        },
                       ),
                     );
                   },

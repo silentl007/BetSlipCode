@@ -17,6 +17,7 @@ class _BetScreenState extends State<BetScreen> {
       initialIndex: 0,
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.white,
             child: Icon(Icons.home),
             onPressed: () => Navigator.pushAndRemoveUntil(
                 context,
