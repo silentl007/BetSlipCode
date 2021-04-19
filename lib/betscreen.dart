@@ -1,4 +1,5 @@
 import 'package:BetSlipCode/betdatascreen.dart';
+import 'package:BetSlipCode/chatlogin.dart';
 import 'package:BetSlipCode/home.dart';
 import 'package:flutter/material.dart';
 
@@ -17,13 +18,23 @@ class _BetScreenState extends State<BetScreen> {
       initialIndex: 0,
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.white,
+            backgroundColor: Colors.white,
             child: Icon(Icons.home),
             onPressed: () => Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => HomeSelect()),
                 (Route<dynamic> route) => false)),
         appBar: AppBar(
+          actions: [
+            Container(
+                child: IconButton(
+              icon: Icon(Icons.group),
+              onPressed: () {
+                return Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ChatLogin()));
+              },
+            ))
+          ],
           elevation: widget.selectedBetCompany.length == 1 ? 0 : 4,
           bottom: TabBar(
             indicatorColor: Colors.white,

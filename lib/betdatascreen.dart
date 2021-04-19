@@ -97,12 +97,12 @@ class _BetDataScreenState extends State<BetDataScreen> {
                         ),
                         onTap: () {
                           Fluttertoast.showToast(
-                              msg: "Copied to clipboard!",
+                              msg: "Odds copied to clipboard!",
                               toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
+                              gravity: ToastGravity.BOTTOM,
                               timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.red,
-                              textColor: Colors.white,
+                              backgroundColor: Colors.white,
+                              textColor: Colors.black,
                               fontSize: 16.0);
 
                           Clipboard.setData(new ClipboardData(
@@ -115,7 +115,7 @@ class _BetDataScreenState extends State<BetDataScreen> {
               : Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('No bet codes uploaded yet!'),
+                    Text('Sorry, no bet codes uploaded yet!'),
                     Text('Please try again or check other platforms')
                   ],
                 );
