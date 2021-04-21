@@ -106,7 +106,7 @@ class _BetDataScreenState extends State<BetDataScreen> {
                               fontSize: 16.0);
 
                           Clipboard.setData(new ClipboardData(
-                              text: "${snapshot.data[index]['odds']}"));
+                              text: "${snapshot.data[index]['slipcode']}"));
                         },
                       ),
                     );

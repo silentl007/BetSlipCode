@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:BetSlipCode/model.dart';
 
-class Selector extends StatefulWidget {
+class Choice extends StatefulWidget {
   final List<Check> companies;
-  Selector(this.companies);
+  Choice(this.companies);
   @override
-  _SelectorState createState() => _SelectorState();
+  _ChoiceState createState() => _ChoiceState();
 }
 
-class _SelectorState extends State<Selector> {
+class _ChoiceState extends State<Choice> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(

@@ -1,8 +1,17 @@
+import 'package:BetSlipCode/adsense.dart';
 import 'package:BetSlipCode/home.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  final initFuture = MobileAds.instance.initialize();
+  final adstate = AdSense(initFuture);
+  runApp(Provider.value(
+    value: adstate,
+    builder: (context, child) => MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -22,4 +31,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
