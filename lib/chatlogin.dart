@@ -10,11 +10,21 @@ class _ChatLoginState extends State<ChatLogin> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Center(
-          child: RaisedButton(
-            child: Text('Login with Google'),
-            onPressed: (){},
-          ),
+        appBar: AppBar(
+          title: Text('Chat Section'),
+          centerTitle: true,
+        ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(child: Container(),),
+            Container(
+              child: ElevatedButton(
+                child: Text('Login with Google'),
+                onPressed: (){},
+              ),
+            ),
+          ],
         ),
       ),
       

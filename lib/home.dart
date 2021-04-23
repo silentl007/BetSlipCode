@@ -44,7 +44,7 @@ class _HomeSelectState extends State<HomeSelect> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(child: Choice(betCompany)),
-              RaisedButton(
+              ElevatedButton(
                 child: Text('Continue'),
                 onPressed: () => proceed(),
               ),

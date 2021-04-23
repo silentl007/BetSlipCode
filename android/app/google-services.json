@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "810514184313",
+    "project_id": "betslipchat",
+    "storage_bucket": "betslipchat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:810514184313:android:f87e471fffc1557b487ca8",
+        "android_client_info": {
+          "package_name": "com.example.BetSlipCode"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "810514184313-0m9kgvocmj1fqteeq047lskkjvjas08o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.BetSlipCode",
+            "certificate_hash": "7254e0b0af0b00a202c437c5e170177870fac3fe"
+          }
+        },
+        {
+          "client_id": "810514184313-bu3ufgg18u42jq5s9k4vvt0l3c5n3anm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAR4dV-kGNWK8eYpxW88PJh-bMgJTgHei8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "810514184313-bu3ufgg18u42jq5s9k4vvt0l3c5n3anm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
