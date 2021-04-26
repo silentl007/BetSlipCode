@@ -31,11 +31,11 @@ class _ChatLoginState extends State<ChatLogin> {
         goto();
       } 
     } catch (error) {
-      print('---------- error ----------------');
+      print('---------- error initialize----------------');
       await Authenticate().initialize();
         var userGoogle = await Authenticate().signInWithGoogle();
         goto();
-      print('---------- error ----------------');
+      print('---------- error here----------------');
     }
   }
 

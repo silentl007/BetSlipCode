@@ -1,3 +1,5 @@
+import 'package:BetSlipCode/chat/messagewall.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -31,7 +33,19 @@ class _ChatBoxState extends State<ChatBox> {
           child: Column(
             children: [
               Expanded(
-                child: Container(),
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('chat_messages')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return MessageWall(snapshot.data.docs);
+                    }
+                    return Center(
+                      child: Text('loading'),
+                    );
+                  },
+                ),
               ),
               textspace()
             ],
