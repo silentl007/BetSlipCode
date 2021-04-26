@@ -20,7 +20,7 @@ class _BetDataScreenState extends State<BetDataScreen> {
   }
 
   _getCodes() async {
-    Uri link = Uri(query: 'https://betslipcode.herokuapp.com/get/code');
+    Uri link = Uri.parse('https://betslipcode.herokuapp.com/get/code');
     try {
       var getCodes = await http.get(link);
       if (getCodes.statusCode == 200) {
