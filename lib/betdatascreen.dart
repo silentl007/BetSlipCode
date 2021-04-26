@@ -36,6 +36,8 @@ class _BetDataScreenState extends State<BetDataScreen> {
             return decode[0]['NairaBet'];
           } else if (widget.company == 'OnexBet') {
             return decode[0]['OnexBet'];
+          } else {
+            return [];
           }
         }
       }
@@ -121,7 +123,7 @@ class _BetDataScreenState extends State<BetDataScreen> {
                 );
         } else {
           return Center(
-            child: RaisedButton(
+            child: ElevatedButton(
               child: Text('Retry'),
               onPressed: () {
                 setState(() {

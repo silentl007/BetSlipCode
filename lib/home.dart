@@ -17,12 +17,13 @@ class HomeSelect extends StatefulWidget {
 class _HomeSelectState extends State<HomeSelect> {
   BannerAd banner;
   var getComp;
-  List<Check> betCompany = [
-    Check('Bet9ja'),
-    Check('SportyBet'),
-    Check('NairaBet'),
-    Check('OnexBet'),
-  ];
+  // List<Check> betCompany = [
+  //   Check('Bet9ja'),
+  //   Check('SportyBet'),
+  //   Check('NairaBet'),
+  //   Check('OnexBet'),
+  // ];
+  List<Check> betCompany = [];
   List<String> selected = [];
 
   @override
@@ -33,16 +34,16 @@ class _HomeSelectState extends State<HomeSelect> {
   }
 
   getCompanies() async {
-    var link = Uri.parse('');
+    var link = Uri.parse('https://betslipcode.herokuapp.com/get/company');
     try {
       var getList = await http.get(link);
       if (getList.statusCode == 200) {
         var decode = jsonDecode(getList.body);
-        print(decode);
-        for (var data in decode) {
+        for (var data in decode[0]['company']) {
           betCompany.add(Check(data));
         }
       }
+      return betCompany;
     } catch (e) {
       return null;
     }
@@ -67,27 +68,64 @@ class _HomeSelectState extends State<HomeSelect> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(child: Choice(betCompany)),
-            ElevatedButton(
-              child: Text('Continue'),
-              onPressed: () => proceed(),
-            ),
-            banner == null
-                ? SizedBox(
-                    height: 50,
-                  )
-                : Container(
-                    height: 50,
-                    child: AdWidget(
-                      ad: banner,
-                    ),
-                  )
-          ],
-        ),
+      child: FutureBuilder(
+        future: getComp,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                CircularProgressIndicator(
+                  valueColor:
+                      new AlwaysStoppedAnimation<Color>(Colors.blue[200]),
+                  backgroundColor: Colors.grey[300],
+                  strokeWidth: 2.0,
+                ),
+              ],
+            );
+          } else if (snapshot.hasData) {
+            return _checker(snapshot.data);
+          } else {
+            return Center(
+              child: ElevatedButton(
+                child: Text('Retry'),
+                onPressed: () {
+                  setState(() {
+                    getComp = getCompanies();
+                  });
+                },
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  _checker(List betcomp) {
+    Size size = MediaQuery.of(context).size;
+    double sHeight = size.height * 0.06257;
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(child: Choice(betcomp)),
+          ElevatedButton(
+            child: Text('Continue'),
+            onPressed: () => proceed(),
+          ),
+          banner == null
+              ? SizedBox(
+                  height: sHeight,
+                )
+              : Container(
+                  height: sHeight,
+                  child: AdWidget(
+                    ad: banner,
+                  ),
+                )
+        ],
       ),
     );
   }

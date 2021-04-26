@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:BetSlipCode/auth/googleauth.dart';
 
 class ChatLogin extends StatefulWidget {
   @override
@@ -6,6 +7,24 @@ class ChatLogin extends StatefulWidget {
 }
 
 class _ChatLoginState extends State<ChatLogin> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Authenticate().initialize();
+  }
+
+  googleAuth() async {
+    try {
+      var userGoogle = await Authenticate().signInWithGoogle();
+      print(userGoogle);
+    } catch (error) {
+      print('---------- error ----------------');
+      print(error);
+      print('---------- error ----------------');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -17,17 +36,20 @@ class _ChatLoginState extends State<ChatLogin> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Expanded(child: Container(),),
+            Expanded(
+              child: Container(),
+            ),
             Container(
               child: ElevatedButton(
                 child: Text('Login with Google'),
-                onPressed: (){},
+                onPressed: () {
+                  googleAuth();
+                },
               ),
             ),
           ],
         ),
       ),
-      
     );
   }
 }

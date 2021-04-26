@@ -12,7 +12,7 @@ class _ChoiceState extends State<Choice> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      scrollDirection: Axis.horizontal,
+      scrollDirection: Axis.vertical,
       itemCount: widget.companies.length,
       itemBuilder: (BuildContext context, int index) {
         return Container(

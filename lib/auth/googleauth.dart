@@ -6,6 +6,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 class Authenticate extends AuthBase {
   @override
   Future<FirebaseApp> initialize() async {
+    // values are found in your firebase app details firebase.console.com
+    // google-services.json file is downloaded from created firebase app
     return await Firebase.initializeApp(
       name: 'BetSlipChat',
       options: FirebaseOptions(
