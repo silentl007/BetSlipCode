@@ -1,5 +1,7 @@
+import 'package:BetSlipCode/chat/chatbox.dart';
 import 'package:flutter/material.dart';
 import 'package:BetSlipCode/auth/googleauth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class ChatLogin extends StatefulWidget {
   @override
@@ -11,18 +13,35 @@ class _ChatLoginState extends State<ChatLogin> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Authenticate().initialize();
+    // initFire();
   }
 
-  googleAuth() async {
+  initFire() async {
+    if (Firebase.app().name.isNotEmpty) {
+    } else {
+      await Authenticate().initialize();
+    }
+  }
+
+  signin() async {
     try {
-      var userGoogle = await Authenticate().signInWithGoogle();
-      print(userGoogle);
+      // print(Firebase.app());
+      if (Firebase.app().name.isNotEmpty) {
+        var userGoogle = await Authenticate().signInWithGoogle();
+        goto();
+      } 
     } catch (error) {
       print('---------- error ----------------');
-      print(error);
+      await Authenticate().initialize();
+        var userGoogle = await Authenticate().signInWithGoogle();
+        goto();
       print('---------- error ----------------');
     }
+  }
+
+  goto() {
+    return Navigator.of(context)
+        .push(MaterialPageRoute(builder: (BuildContext context) => ChatBox()));
   }
 
   @override
@@ -43,7 +62,7 @@ class _ChatLoginState extends State<ChatLogin> {
               child: ElevatedButton(
                 child: Text('Login with Google'),
                 onPressed: () {
-                  googleAuth();
+                  signin();
                 },
               ),
             ),

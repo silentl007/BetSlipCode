@@ -13,42 +13,48 @@ class BetScreen extends StatefulWidget {
 class _BetScreenState extends State<BetScreen> {
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: widget.selectedBetCompany.length,
-      initialIndex: 0,
-      child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.white,
-            child: Icon(Icons.home),
-            onPressed: () => Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => HomeSelect()),
-                (Route<dynamic> route) => false)),
-        appBar: AppBar(
-          actions: [
-            Container(
-                child: IconButton(
-              icon: Icon(Icons.group),
-              onPressed: () {
-                return Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ChatLogin()));
-              },
-            ))
-          ],
-          elevation: widget.selectedBetCompany.length == 1 ? 0 : 4,
-          bottom: TabBar(
-            indicatorColor: Colors.white,
-            tabs: widget.selectedBetCompany
-                .map((items) => Tab(
-                      child: Text(items),
-                    ))
+    return WillPopScope(
+      onWillPop: () => Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => HomeSelect()),
+          (Route<dynamic> route) => false),
+      child: DefaultTabController(
+        length: widget.selectedBetCompany.length,
+        initialIndex: 0,
+        child: Scaffold(
+          floatingActionButton: FloatingActionButton(
+              backgroundColor: Colors.white,
+              child: Icon(Icons.home),
+              onPressed: () => Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomeSelect()),
+                  (Route<dynamic> route) => false)),
+          appBar: AppBar(
+            actions: [
+              Container(
+                  child: IconButton(
+                icon: Icon(Icons.group),
+                onPressed: () {
+                  return Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ChatLogin()));
+                },
+              ))
+            ],
+            elevation: widget.selectedBetCompany.length == 1 ? 0 : 4,
+            bottom: TabBar(
+              indicatorColor: Colors.white,
+              tabs: widget.selectedBetCompany
+                  .map((items) => Tab(
+                        child: Text(items),
+                      ))
+                  .toList(),
+            ),
+          ),
+          body: TabBarView(
+            children: widget.selectedBetCompany
+                .map((items) => BetDataScreen((items)))
                 .toList(),
           ),
-        ),
-        body: TabBarView(
-          children: widget.selectedBetCompany
-              .map((items) => BetDataScreen((items)))
-              .toList(),
         ),
       ),
     );

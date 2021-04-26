@@ -3,8 +3,9 @@ import 'package:BetSlipCode/home.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
+import 'package:BetSlipCode/auth/googleauth.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final initFuture = MobileAds.instance.initialize();
   final adstate = AdSense(initFuture);

@@ -9,31 +9,30 @@ class Authenticate extends AuthBase {
     // values are found in your firebase app details firebase.console.com
     // google-services.json file is downloaded from created firebase app
     return await Firebase.initializeApp(
-      name: 'BetSlipChat',
-      options: FirebaseOptions(
-        apiKey: 'AIzaSyAR4dV-kGNWK8eYpxW88PJh-bMgJTgHei8',
-        appId: '1:810514184313:android:f87e471fffc1557b487ca8',
-        messagingSenderId: '810514184313',
-        projectId: 'betslipchat'
-      )
-    );
+        name: 'BetSlipChat',
+        options: FirebaseOptions(
+            apiKey: 'AIzaSyAR4dV-kGNWK8eYpxW88PJh-bMgJTgHei8',
+            appId: '1:810514184313:android:f87e471fffc1557b487ca8',
+            messagingSenderId: '810514184313',
+            projectId: 'betslipchat'));
   }
 
   @override
   Future<UserCredential> signInWithGoogle() async {
     // Trigger the authentication flow
-  final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
 
-  // Obtain the auth details from the request
-  final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
 
-  // Create a new credential
-  final GoogleAuthCredential credential = GoogleAuthProvider.credential(
-    accessToken: googleAuth.accessToken,
-    idToken: googleAuth.idToken,
-  );
+    // Create a new credential
+    final GoogleAuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
 
-  // Once signed in, return the UserCredential
-  return await FirebaseAuth.instance.signInWithCredential(credential);
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 }

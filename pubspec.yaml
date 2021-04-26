@@ -17,6 +17,7 @@ dependencies:
   http: ^0.13.1
   fluttertoast: 7.1.0
   google_sign_in: "^4.5.1"
+  cloud_firestore: ^1.0.6
   
 
 dev_dependencies:
