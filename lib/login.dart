@@ -33,9 +33,8 @@ class LoginState extends State<Login> {
 
   signin() async {
     try {
-      // var userGoogle = await Authenticate().signInWithGoogle();
-      // goto();
-      print(user);
+      var userGoogle = await Authenticate().signInWithGoogle();
+      goto();
     } catch (error) {
       print('---------- error initialize----------------');
       print(error);
