@@ -21,7 +21,8 @@ class _ChatBoxState extends State<ChatBox> {
         'author_id': user.uid,
         'photo_url': user.photoURL ?? 'https://placeholder.com/150',
         'value': value,
-        'timestamp': Timestamp.now().millisecondsSinceEpoch
+        'timestamp': Timestamp.now().millisecondsSinceEpoch,
+        'date': '' // date will be used for filtering to show only that day
       });
     }
   }
@@ -43,7 +44,7 @@ class _ChatBoxState extends State<ChatBox> {
         ),
         body: WillPopScope(
           onWillPop: () {
-            return _alert();
+            _alert();
           },
           child: Column(
             children: [
@@ -52,6 +53,11 @@ class _ChatBoxState extends State<ChatBox> {
                   stream: stream.orderBy('timestamp').snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
+                      if (snapshot.data.docs.isEmpty) {
+                        return Center(
+                          child: Text('No messages yet for today'),
+                        );
+                      }
                       return MessageWall(snapshot.data.docs);
                     }
                     return Center(

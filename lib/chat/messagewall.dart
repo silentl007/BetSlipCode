@@ -23,10 +23,18 @@ class MessageWall extends StatelessWidget {
       itemBuilder: (context, index) {
         final data = messages[index].data();
         final user = FirebaseAuth.instance.currentUser;
+        // use data['date'] == Date.Now() to filter to show only the day's message
+        // if (---){}
         if (user != null && user.uid == data['author_id']) {
-          return ChatMessage(
-            index: index,
-            data: data,
+          return Dismissible(
+            onDismissed: (_) {
+              _deleteMessage(messages[index].id);
+            },
+            key: ValueKey(data['timestamp']),
+            child: ChatMessage(
+              index: index,
+              data: data,
+            ),
           );
         }
         return ChatMessageOther(
@@ -36,5 +44,10 @@ class MessageWall extends StatelessWidget {
         );
       },
     );
+  }
+
+  _deleteMessage(String messageID) async {
+    var stream = FirebaseFirestore.instance.collection('chat_messages');
+    await stream.doc(messageID).delete();
   }
 }

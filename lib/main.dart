@@ -1,5 +1,6 @@
 import 'package:BetSlipCode/adsense.dart';
 import 'package:BetSlipCode/home.dart';
+import 'package:BetSlipCode/login.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
       //   brightness: Brightness.dark
       // ),
       theme: ThemeData.dark(),
-      home: HomeSelect(),
+      home: Login(),
     );
   }
 }

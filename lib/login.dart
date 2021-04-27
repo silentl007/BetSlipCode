@@ -1,14 +1,15 @@
 import 'package:BetSlipCode/chat/chatbox.dart';
+import 'package:BetSlipCode/home.dart';
 import 'package:flutter/material.dart';
 import 'package:BetSlipCode/auth/googleauth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-class ChatLogin extends StatefulWidget {
+class Login extends StatefulWidget {
   @override
-  _ChatLoginState createState() => _ChatLoginState();
+  LoginState createState() => LoginState();
 }
 
-class _ChatLoginState extends State<ChatLogin> {
+class LoginState extends State<Login> {
   @override
   void initState() {
     // TODO: implement initState
@@ -29,19 +30,19 @@ class _ChatLoginState extends State<ChatLogin> {
       if (Firebase.app().name.isNotEmpty) {
         var userGoogle = await Authenticate().signInWithGoogle();
         goto();
-      } 
+      }
     } catch (error) {
       print('---------- error initialize----------------');
       await Authenticate().initialize();
-        var userGoogle = await Authenticate().signInWithGoogle();
-        goto();
+      var userGoogle = await Authenticate().signInWithGoogle();
+      goto();
       print('---------- error here----------------');
     }
   }
 
   goto() {
-    return Navigator.of(context)
-        .push(MaterialPageRoute(builder: (BuildContext context) => ChatBox()));
+    return Navigator.of(context).push(
+        MaterialPageRoute(builder: (BuildContext context) => HomeSelect()));
   }
 
   @override
