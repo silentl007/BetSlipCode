@@ -11,6 +11,21 @@ class ChatBox extends StatefulWidget {
 class _ChatBoxState extends State<ChatBox> {
   TextEditingController _controller = TextEditingController();
   String _message;
+  var stream = FirebaseFirestore.instance.collection('chat_messages');
+
+  void _addMessage(String value) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await stream.add({
+        'author': user.displayName ?? 'Anonymous',
+        'author_id': user.uid,
+        'photo_url': user.photoURL ?? 'https://placeholder.com/150',
+        'value': value,
+        'timestamp': Timestamp.now().millisecondsSinceEpoch
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -28,15 +43,13 @@ class _ChatBoxState extends State<ChatBox> {
         ),
         body: WillPopScope(
           onWillPop: () {
-            _alert();
+            return _alert();
           },
           child: Column(
             children: [
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('chat_messages')
-                      .snapshots(),
+                  stream: stream.orderBy('timestamp').snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       return MessageWall(snapshot.data.docs);
@@ -98,6 +111,7 @@ class _ChatBoxState extends State<ChatBox> {
     if (_message.isEmpty || _message == null) {
     } else {
       print(_message);
+      _addMessage(_message);
       _message = '';
       _controller.clear();
     }

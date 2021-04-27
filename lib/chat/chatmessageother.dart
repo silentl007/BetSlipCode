@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class ChatMessageOther extends StatelessWidget {
   final int index;
   final Map<String, dynamic> data;
-  ChatMessageOther({this.index, this.data});
+  final bool showAvatar;
+  ChatMessageOther({this.index, this.data, this.showAvatar = true});
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -12,14 +13,20 @@ class ChatMessageOther extends StatelessWidget {
     double padding12 = size.height * 0.015;
     double padding6 = size.height * 0.0075;
     double font12 = size.height * 0.015;
+    double size40 = size.height * 0.05;
     return Container(
       margin: EdgeInsets.symmetric(horizontal: padding12, vertical: padding6),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(
-            backgroundImage: NetworkImage(data['photo_url']),
-          ),
+          if (showAvatar)
+            CircleAvatar(
+              backgroundImage: NetworkImage(data['photo_url']),
+            )
+          else
+            SizedBox(
+              width: size40,
+            ),
           SizedBox(
             width: 5,
           ),

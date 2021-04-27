@@ -6,12 +6,24 @@ import 'package:BetSlipCode/chat/messagewall.dart';
 class MessageWall extends StatelessWidget {
   final List<QueryDocumentSnapshot> messages;
   MessageWall(this.messages);
+
+  bool shouldShowAvatar(int indx) {
+    if (indx == 0) return true;
+    final previousID = messages[indx - 1].data()['author_id'];
+    final authorID = messages[indx].data()['author_id'];
+    return authorID != previousID;
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: messages.length,
       itemBuilder: (context, index) {
-        return ChatMessageOther(index: index, data: messages[index].data());
+        return ChatMessageOther(
+          index: index,
+          data: messages[index].data(),
+          showAvatar: shouldShowAvatar(index),
+        );
       },
     );
   }
