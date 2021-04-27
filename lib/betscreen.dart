@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class BetScreen extends StatefulWidget {
   final List<String> selectedBetCompany;
-  BetScreen(this.selectedBetCompany);
+  BetScreen({this.selectedBetCompany});
   @override
   _BetScreenState createState() => _BetScreenState();
 }
@@ -30,6 +30,8 @@ class _BetScreenState extends State<BetScreen> {
                   MaterialPageRoute(builder: (context) => HomeSelect()),
                   (Route<dynamic> route) => false)),
           appBar: AppBar(
+            title: Text('Bet Platforms'),
+            centerTitle: true,
             actions: [
               Container(
                   child: IconButton(

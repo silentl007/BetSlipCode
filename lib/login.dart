@@ -1,5 +1,6 @@
 import 'package:BetSlipCode/chat/chatbox.dart';
 import 'package:BetSlipCode/home.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:BetSlipCode/auth/googleauth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -10,38 +11,40 @@ class Login extends StatefulWidget {
 }
 
 class LoginState extends State<Login> {
+  var user;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    // initFire();
+    initFire();
   }
 
   initFire() async {
-    if (Firebase.app().name.isNotEmpty) {
-    } else {
-      await Authenticate().initialize();
+    WidgetsFlutterBinding.ensureInitialized();
+    await Authenticate().initialize();
+    if (FirebaseAuth.instance.currentUser != null) {
+      print('----------- assigning user ------------------');
+      user = FirebaseAuth.instance.currentUser;
+      setState(() {
+        user;
+      });
     }
   }
 
   signin() async {
     try {
-      // print(Firebase.app());
-      if (Firebase.app().name.isNotEmpty) {
-        var userGoogle = await Authenticate().signInWithGoogle();
-        goto();
-      }
+      // var userGoogle = await Authenticate().signInWithGoogle();
+      // goto();
+      print(user);
     } catch (error) {
       print('---------- error initialize----------------');
-      await Authenticate().initialize();
-      var userGoogle = await Authenticate().signInWithGoogle();
-      goto();
+      print(error);
       print('---------- error here----------------');
     }
   }
 
   goto() {
-    return Navigator.of(context).push(
+    return Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (BuildContext context) => HomeSelect()));
   }
 
@@ -49,26 +52,37 @@ class LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('Chat Section'),
-          centerTitle: true,
-        ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Container(),
-            ),
-            Container(
-              child: ElevatedButton(
-                child: Text('Login with Google'),
-                onPressed: () {
-                  signin();
-                },
+        // appBar: AppBar(
+        //   title: Text('Chat Section'),
+        //   centerTitle: true,
+        // ),
+        body: user != null
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Continue as:'),
+                    Text('${user.displayName}'),
+                    Text('${user.email}'),
+                    ElevatedButton(
+                      child: Text('Continue'),
+                      onPressed: () {
+                        goto();
+                      },
+                    )
+                  ],
+                ),
+              )
+            : Center(
+                child: Container(
+                  child: ElevatedButton(
+                    child: Text('Login with Google'),
+                    onPressed: () {
+                      signin();
+                    },
+                  ),
+                ),
               ),
-            ),
-          ],
-        ),
       ),
     );
   }

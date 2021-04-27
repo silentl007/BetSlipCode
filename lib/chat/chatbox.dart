@@ -1,3 +1,4 @@
+import 'package:BetSlipCode/betscreen.dart';
 import 'package:BetSlipCode/chat/messagewall.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -33,11 +34,12 @@ class _ChatBoxState extends State<ChatBox> {
       child: Scaffold(
         appBar: AppBar(
           title: Text('ChatBox'),
+          centerTitle: true,
           actions: [
             IconButton(
-              icon: Icon(Icons.logout),
+              icon: Icon(Icons.add),
               onPressed: () {
-                _alert();
+                // _alert();
               },
             )
           ],
@@ -116,7 +118,6 @@ class _ChatBoxState extends State<ChatBox> {
   _send() {
     if (_message.isEmpty || _message == null) {
     } else {
-      print(_message);
       _addMessage(_message);
       _message = '';
       _controller.clear();
@@ -124,17 +125,22 @@ class _ChatBoxState extends State<ChatBox> {
   }
 
   _logout() async {
+    Navigator.of(context).pop(true);
+    // FirebaseAuth.instance.signOut();
     Navigator.of(context).pop();
-    FirebaseAuth.instance.signOut();
-    Navigator.of(context).pop();
+    // Navigator.pushAndRemoveUntil(
+    //     context,
+    //     MaterialPageRoute(builder: (context) => HomeSelect()),
+    //     (Route<dynamic> route) => false);
+        // Navigator.push(context,MaterialPageRoute(builder: (context) =>BetScreen()));
   }
 
   _alert() {
     return showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: Text('Log out of chat'),
-              content: Text('Are you sure you want to log out of chat room?'),
+              title: Text('Leave Chat?'),
+              content: Text('Are you sure you want to leave the chat room?'),
               actions: [
                 ElevatedButton(
                   child: Text('Yes'),

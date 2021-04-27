@@ -141,7 +141,8 @@ class _HomeSelectState extends State<HomeSelect> {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => BetScreen(selected.toSet().toList())));
+              builder: (context) =>
+                  BetScreen(selectedBetCompany: selected.toSet().toList())));
     } else {
       // snackbar
     }
