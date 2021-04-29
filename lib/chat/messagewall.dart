@@ -3,11 +3,11 @@ import 'package:BetSlipCode/chat/chatmessageother.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:BetSlipCode/chat/messagewall.dart';
 
 class MessageWall extends StatelessWidget {
   final List<QueryDocumentSnapshot> messages;
-  MessageWall(this.messages);
+  MessageWall({this.messages});
+  final listKey = ScrollController();
 
   bool shouldShowAvatar(int indx) {
     if (indx == 0) return true;
@@ -19,6 +19,7 @@ class MessageWall extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      controller: listKey,
       itemCount: messages.length,
       itemBuilder: (context, index) {
         final data = messages[index].data();

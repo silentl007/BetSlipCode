@@ -1,4 +1,3 @@
-import 'package:BetSlipCode/betscreen.dart';
 import 'package:BetSlipCode/chat/messagewall.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -60,7 +59,7 @@ class _ChatBoxState extends State<ChatBox> {
                           child: Text('No messages yet for today'),
                         );
                       }
-                      return MessageWall(snapshot.data.docs);
+                      return MessageWall(messages: snapshot.data.docs);
                     }
                     return Center(
                       child: Text('loading'),
@@ -120,6 +119,9 @@ class _ChatBoxState extends State<ChatBox> {
     } else {
       _addMessage(_message);
       _message = '';
+      MessageWall()
+          .listKey
+          .jumpTo(MessageWall().listKey.position.maxScrollExtent);
       _controller.clear();
     }
   }
@@ -128,11 +130,6 @@ class _ChatBoxState extends State<ChatBox> {
     Navigator.of(context).pop(true);
     // FirebaseAuth.instance.signOut();
     Navigator.of(context).pop();
-    // Navigator.pushAndRemoveUntil(
-    //     context,
-    //     MaterialPageRoute(builder: (context) => HomeSelect()),
-    //     (Route<dynamic> route) => false);
-        // Navigator.push(context,MaterialPageRoute(builder: (context) =>BetScreen()));
   }
 
   _alert() {

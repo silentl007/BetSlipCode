@@ -1,9 +1,8 @@
-import 'package:BetSlipCode/chat/chatbox.dart';
 import 'package:BetSlipCode/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:BetSlipCode/auth/googleauth.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -22,6 +21,8 @@ class LoginState extends State<Login> {
   initFire() async {
     WidgetsFlutterBinding.ensureInitialized();
     await Authenticate().initialize();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLogged', true);
     if (FirebaseAuth.instance.currentUser != null) {
       print('----------- assigning user ------------------');
       user = FirebaseAuth.instance.currentUser;

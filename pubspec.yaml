@@ -18,6 +18,8 @@ dependencies:
   fluttertoast: 7.1.0
   google_sign_in: "^4.5.1"
   cloud_firestore: ^1.0.6
+  introduction_screen: ^2.1.0
+  shared_preferences: ^2.0.5
   
 
 dev_dependencies:
