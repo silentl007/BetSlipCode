@@ -10,30 +10,11 @@ class ChatBox extends StatefulWidget {
 }
 
 class _ChatBoxState extends State<ChatBox> {
-  TextEditingController _controller = TextEditingController();
-  String _message;
   final DateTime now = DateTime.now();
-
   var stream = FirebaseFirestore.instance.collection('chat_messages');
-
-  void _addMessage(String value) async {
-    final String date = DateFormat('yyyy-MM-dd').format(now);
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      await stream.add({
-        'author': user.displayName ?? 'Anonymous',
-        'author_id': user.uid,
-        'photo_url': user.photoURL ?? 'https://placeholder.com/150',
-        'value': value,
-        'timestamp': Timestamp.now().millisecondsSinceEpoch,
-        'date': date // date will be used for filtering to show only that day
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    final String date = DateFormat('yyyy-MM-dd').format(now);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -58,7 +39,7 @@ class _ChatBoxState extends State<ChatBox> {
                 child: StreamBuilder<QuerySnapshot>(
                   stream: stream
                       // .where('date', isEqualTo: date)
-                      
+
                       .orderBy('timestamp')
                       .snapshots(),
                   builder: (context, snapshot) {
@@ -76,7 +57,7 @@ class _ChatBoxState extends State<ChatBox> {
                   },
                 ),
               ),
-              textspace()
+              MessageWall().textspace()
             ],
           ),
         ),
@@ -84,57 +65,8 @@ class _ChatBoxState extends State<ChatBox> {
     );
   }
 
-  textspace() {
-    return Container(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _controller,
-              minLines: 1,
-              maxLines: 3,
-              decoration: InputDecoration(
-                hintText: 'Type a message',
-                focusedBorder:
-                    UnderlineInputBorder(borderSide: BorderSide.none),
-              ),
-              onChanged: (text) {
-                _message = text;
-              },
-            ),
-          ),
-          SizedBox(
-            width: 5,
-          ),
-          Container(
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.black),
-                borderRadius: BorderRadius.all(Radius.circular(10))),
-            child: MaterialButton(
-              child: Text('Send'),
-              onPressed: () {
-                _send();
-              },
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  _send() {
-    if (_message.isEmpty || _message == null) {
-    } else {
-      _addMessage(_message);
-      _message = '';
-      _controller.clear();
-    }
-  }
-
   _logout() async {
     Navigator.of(context).pop(true);
-    // FirebaseAuth.instance.signOut();
     Navigator.of(context).pop();
   }
 

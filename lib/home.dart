@@ -17,12 +17,6 @@ class HomeSelect extends StatefulWidget {
 class _HomeSelectState extends State<HomeSelect> {
   BannerAd banner;
   var getComp;
-  // List<Check> betCompany = [
-  //   Check('Bet9ja'),
-  //   Check('SportyBet'),
-  //   Check('NairaBet'),
-  //   Check('OnexBet'),
-  // ];
   List<Check> betCompany = [];
   List<String> selected = [];
 

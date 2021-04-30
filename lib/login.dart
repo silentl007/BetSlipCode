@@ -32,17 +32,6 @@ class LoginState extends State<Login> {
     }
   }
 
-  signin() async {
-    try {
-      var userGoogle = await Authenticate().signInWithGoogle();
-      goto();
-    } catch (error) {
-      print('---------- error initialize----------------');
-      print(error);
-      print('---------- error here----------------');
-    }
-  }
-
   goto() {
     return Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (BuildContext context) => HomeSelect()));
@@ -69,21 +58,62 @@ class LoginState extends State<Login> {
                       onPressed: () {
                         goto();
                       },
-                    )
+                    ),
+                    ElevatedButton(
+                      child: Text('Sign-in with another account'),
+                      onPressed: () {
+                        logout();
+                      },
+                    ),
                   ],
                 ),
               )
-            : Center(
-                child: Container(
-                  child: ElevatedButton(
-                    child: Text('Login with Google'),
-                    onPressed: () {
-                      signin();
-                    },
-                  ),
-                ),
-              ),
+            : LoginGoogle(),
       ),
     );
+  }
+
+  logout() {
+    // FirebaseAuth.instance.signOut();
+    FirebaseAuth.instance.currentUser.delete();
+    return Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (BuildContext context) => LoginGoogle()));
+  }
+}
+
+class LoginGoogle extends StatefulWidget {
+  @override
+  _LoginGoogleState createState() => _LoginGoogleState();
+}
+
+class _LoginGoogleState extends State<LoginGoogle> {
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        body: Center(
+          child: Container(
+            child: ElevatedButton(
+              child: Text('Login with Google'),
+              onPressed: () {
+                signin();
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  signin() async {
+    try {
+      await Authenticate().signInWithGoogle();
+      return Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (BuildContext context) => HomeSelect()));
+    } catch (error) {
+      print('---------- error initialize----------------');
+      print(error);
+      print('---------- error here----------------');
+    }
   }
 }

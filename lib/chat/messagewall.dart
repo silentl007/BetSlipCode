@@ -9,34 +9,22 @@ class MessageWall extends StatelessWidget {
   final List<QueryDocumentSnapshot> messages;
   MessageWall({this.messages});
   final listKey = ScrollController();
+  final TextEditingController _controller = TextEditingController();
+  String _message;
   final DateTime now = DateTime.now();
-  final DateFormat formatter = DateFormat('yyyy-MM-dd');
-
-  bool shouldShowAvatar(int indx) {
-    if (indx == 0) return true;
-    final previousID = messages[indx - 1].data()['author_id'];
-    final authorID = messages[indx].data()['author_id'];
-    return authorID != previousID;
-  }
+  var stream = FirebaseFirestore.instance.collection('chat_messages');
 
   @override
   Widget build(BuildContext context) {
-    final String currentDate = formatter.format(now);
+    final String currentDate = DateFormat('yyyy-MM-dd').format(now);
     return ListView.builder(
-      // reverse: true,
-      // shrinkWrap: true,
       controller: listKey,
       itemCount: messages.length,
       itemBuilder: (context, index) {
         final data = messages[index].data();
         final user = FirebaseAuth.instance.currentUser;
-        // use data['date'] == Date.Now() to filter to show only the day's message
-        // if (---){}
         if (data['date'].toString() == currentDate) {
-          print('---------------------------------------');
           if (user != null && user.uid == data['author_id']) {
-            // listKey.jumpTo(listKey.position.maxScrollExtent);
-            print('-------------- chat message -------------------------');
             return ChatMessage(
               index: index,
               data: data,
@@ -55,8 +43,77 @@ class MessageWall extends StatelessWidget {
     );
   }
 
+  textspace() {
+    return Container(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          SizedBox(
+            width: 5,
+          ),
+          Expanded(
+            child: TextField(
+              controller: _controller,
+              // focusNode: ,
+              minLines: 1,
+              maxLines: 3,
+              decoration: InputDecoration(
+                // border: ,
+                icon: Icon(Icons.keyboard),
+                hintText: 'Type a message',
+                // focusedBorder:
+                //     UnderlineInputBorder(borderSide: BorderSide.none),
+              ),
+              onChanged: (text) {
+                _message = text;
+              },
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.send),
+            onPressed: () {
+              _send();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  _send() {
+    if (_message.isEmpty || _message == null) {
+    } else {
+      _addMessage(_message);
+      _message = '';
+      _controller.clear();
+    }
+  }
+
+  void _addMessage(String value) async {
+    final String date = DateFormat('yyyy-MM-dd').format(now);
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await stream.add({
+        'author': user.displayName ?? 'Anonymous',
+        'author_id': user.uid,
+        'photo_url': user.photoURL ?? 'https://placeholder.com/150',
+        'value': value,
+        'timestamp': Timestamp.now().millisecondsSinceEpoch,
+        'date': date
+      });
+    }
+    // listKey.jumpTo(listKey.position.maxScrollExtent);
+  }
+
   _deleteMessage(String messageID) async {
     var stream = FirebaseFirestore.instance.collection('chat_messages');
     await stream.doc(messageID).delete();
+  }
+
+  bool shouldShowAvatar(int indx) {
+    if (indx == 0) return true;
+    final previousID = messages[indx - 1].data()['author_id'];
+    final authorID = messages[indx].data()['author_id'];
+    return authorID != previousID;
   }
 }
