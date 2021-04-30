@@ -18,14 +18,20 @@ class _IntroPageState extends State<IntroPage> {
       showSkipButton: true,
       skipFlex: 0,
       nextFlex: 0,
+      skip: const Text('Skip'),
+      next: const Icon(Icons.arrow_forward),
+      done: const Text('Done', style: TextStyle(fontWeight: FontWeight.w600)),
       pages: [
         PageViewModel(
+          title: 'Page1',
           bodyWidget: Center(child: Text('Page1'),)
         ),
         PageViewModel(
+          title: 'Page2',
           bodyWidget: Center(child: Text('Page2'),)
         ),
         PageViewModel(
+          title: 'Page3',
           bodyWidget: Center(child: Text('Page3'),)
         ),
       ],

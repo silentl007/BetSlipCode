@@ -10,9 +10,6 @@ class ChatMessage extends StatelessWidget {
     double maxWidth300 = size.height * 0.3755;
     double padding10 = size.height * 0.01251;
     double padding12 = size.height * 0.015;
-    double padding6 = size.height * 0.0075;
-    double font12 = size.height * 0.015;
-    double size40 = size.height * 0.05;
     return Container(
         child: Row(
       mainAxisAlignment: MainAxisAlignment.end,

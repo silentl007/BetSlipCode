@@ -2,6 +2,7 @@ import 'package:BetSlipCode/chat/messagewall.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ChatBox extends StatefulWidget {
   @override
@@ -11,9 +12,12 @@ class ChatBox extends StatefulWidget {
 class _ChatBoxState extends State<ChatBox> {
   TextEditingController _controller = TextEditingController();
   String _message;
+  final DateTime now = DateTime.now();
+
   var stream = FirebaseFirestore.instance.collection('chat_messages');
 
   void _addMessage(String value) async {
+    final String date = DateFormat('yyyy-MM-dd').format(now);
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       await stream.add({
@@ -22,13 +26,14 @@ class _ChatBoxState extends State<ChatBox> {
         'photo_url': user.photoURL ?? 'https://placeholder.com/150',
         'value': value,
         'timestamp': Timestamp.now().millisecondsSinceEpoch,
-        'date': '' // date will be used for filtering to show only that day
+        'date': date // date will be used for filtering to show only that day
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final String date = DateFormat('yyyy-MM-dd').format(now);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -51,7 +56,11 @@ class _ChatBoxState extends State<ChatBox> {
             children: [
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: stream.orderBy('timestamp').snapshots(),
+                  stream: stream
+                      // .where('date', isEqualTo: date)
+                      
+                      .orderBy('timestamp')
+                      .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       if (snapshot.data.docs.isEmpty) {
@@ -119,9 +128,6 @@ class _ChatBoxState extends State<ChatBox> {
     } else {
       _addMessage(_message);
       _message = '';
-      MessageWall()
-          .listKey
-          .jumpTo(MessageWall().listKey.position.maxScrollExtent);
       _controller.clear();
     }
   }
