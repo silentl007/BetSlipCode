@@ -1,6 +1,6 @@
 import 'package:BetSlipCode/chat/messagewall.dart';
+import 'package:BetSlipCode/chat/publicslip.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -12,9 +12,9 @@ class ChatBox extends StatefulWidget {
 class _ChatBoxState extends State<ChatBox> {
   final DateTime now = DateTime.now();
   var stream = FirebaseFirestore.instance.collection('chat_messages');
-
   @override
   Widget build(BuildContext context) {
+    final String currentDate = DateFormat('yyyy-MM-dd').format(now);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -24,7 +24,8 @@ class _ChatBoxState extends State<ChatBox> {
             IconButton(
               icon: Icon(Icons.add),
               onPressed: () {
-                // _alert();
+                return Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (BuildContext context) => PublicCodes()));
               },
             )
           ],
@@ -37,11 +38,9 @@ class _ChatBoxState extends State<ChatBox> {
             children: [
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: stream
-                      // .where('date', isEqualTo: date)
-
-                      .orderBy('timestamp')
-                      .snapshots(),
+                  stream: stream.
+                  where('date', isEqualTo: currentDate)
+                  .orderBy('timestamp').snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       if (snapshot.data.docs.isEmpty) {
