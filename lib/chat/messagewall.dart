@@ -23,21 +23,17 @@ class MessageWall extends StatelessWidget {
       itemBuilder: (context, index) {
         final data = messages[index].data();
         final user = FirebaseAuth.instance.currentUser;
-        if (data['date'].toString() == currentDate) {
-          if (user != null && user.uid == data['author_id']) {
-            return ChatMessage(
-              index: index,
-              data: data,
-            );
-          } else {
-            return ChatMessageOther(
-              index: index,
-              data: data,
-              showAvatar: shouldShowAvatar(index),
-            );
-          }
+        if (user != null && user.uid == data['author_id']) {
+          return ChatMessage(
+            index: index,
+            data: data,
+          );
         } else {
-          return Container();
+          return ChatMessageOther(
+            index: index,
+            data: data,
+            showAvatar: shouldShowAvatar(index),
+          );
         }
       },
     );

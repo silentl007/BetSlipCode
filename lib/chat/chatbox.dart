@@ -40,7 +40,7 @@ class _ChatBoxState extends State<ChatBox> {
                 child: StreamBuilder<QuerySnapshot>(
                   stream: stream.
                   where('date', isEqualTo: currentDate)
-                  // .orderBy('timestamp')
+                  .orderBy('timestamp')
                   .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {

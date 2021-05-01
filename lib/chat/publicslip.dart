@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,6 +11,7 @@ class PublicCodes extends StatefulWidget {
 }
 
 class _PublicCodesState extends State<PublicCodes> {
+  final _keyForm = GlobalKey<FormState>();
   final oddsControl = TextEditingController();
   final betcodeControl = TextEditingController();
   final timeControl = TextEditingController();
@@ -26,6 +28,8 @@ class _PublicCodesState extends State<PublicCodes> {
     'Tennis',
     'Formula 1'
   ];
+  Color platformColor = Colors.white;
+  Color sportsColor = Colors.white;
   var stream = FirebaseFirestore.instance.collection('public_betslip');
   @override
   void initState() {
@@ -41,6 +45,7 @@ class _PublicCodesState extends State<PublicCodes> {
 
   @override
   Widget build(BuildContext context) {
+    final String currentDate = DateFormat('yyyy-MM-dd').format(now);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -59,7 +64,10 @@ class _PublicCodesState extends State<PublicCodes> {
           children: [
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                  stream: stream.orderBy('timestamp').snapshots(),
+                  stream: stream
+                      .where('date', isEqualTo: currentDate)
+                      .orderBy('timestamp')
+                      .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       if (snapshot.data.docs.isEmpty) {
@@ -82,21 +90,27 @@ class _PublicCodesState extends State<PublicCodes> {
   }
 
   _listView(List<QueryDocumentSnapshot> publicbets) {
-    final String currentDate = DateFormat('yyyy-MM-dd').format(now);
     return ListView.builder(
       itemCount: publicbets.length,
       itemBuilder: (context, index) {
         final data = publicbets[index].data();
-        // if (data['date'].toString() == currentDate) {
+        // create a dismissable to remove an entry
         return Card(
           child: ListTile(
-            title: Text('${data['author']}'),
-            subtitle: Column(),
+            title: Text('From: ${data['author']}'),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Platform: ${data['company']}"),
+                Text("Code: ${data['betcode']}"),
+                Text("Odds: ${data['odds']}"),
+                Text("Sports: ${data['sports']}"),
+                Text("Earliest game time: ${data['start']}"),
+              ],
+            ),
             onTap: () {},
           ),
         );
-        // }
-        // return Container();
       },
     );
   }
@@ -110,63 +124,83 @@ class _PublicCodesState extends State<PublicCodes> {
             content: StatefulBuilder(
               builder: (context, StateSetter setState) {
                 return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Container(
-                        child: DropdownButton<String>(
-                          value: selectbetCompany,
-                          items: betCompanies
-                              .map<DropdownMenuItem<String>>((item) {
-                            return DropdownMenuItem(
-                              child: Text(item),
-                              value: item,
-                            );
-                          }).toList(),
-                          onChanged: (text) {
-                            setState(() {
-                              selectbetCompany = text;
-                            });
-                          },
+                  child: Form(
+                    key: _keyForm,
+                    child: Column(
+                      children: [
+                        Container(
+                          child: DropdownButton<String>(
+                            value: selectbetCompany,
+                            items: betCompanies
+                                .map<DropdownMenuItem<String>>((item) {
+                              return DropdownMenuItem(
+                                child: Text(
+                                  item,
+                                  style: TextStyle(color: platformColor),
+                                ),
+                                value: item,
+                              );
+                            }).toList(),
+                            onChanged: (text) {
+                              setState(() {
+                                selectbetCompany = text;
+                              });
+                            },
+                          ),
                         ),
-                      ),
-                      Container(
-                        child: DropdownButton<String>(
-                          value: selectSports,
-                          items: sports.map<DropdownMenuItem<String>>((item) {
-                            return DropdownMenuItem(
-                              child: Text(item),
-                              value: item,
-                            );
-                          }).toList(),
-                          onChanged: (text) {
-                            setState(() {
-                              selectSports = text;
-                            });
-                          },
+                        Container(
+                          child: DropdownButton<String>(
+                            value: selectSports,
+                            items: sports.map<DropdownMenuItem<String>>((item) {
+                              return DropdownMenuItem(
+                                child: Text(
+                                  item,
+                                  style: TextStyle(color: sportsColor),
+                                ),
+                                value: item,
+                              );
+                            }).toList(),
+                            onChanged: (text) {
+                              setState(() {
+                                selectSports = text;
+                              });
+                            },
+                          ),
                         ),
-                      ),
-                      TextFormField(
-                        controller: betcodeControl,
+                        TextFormField(
+                          controller: betcodeControl,
                           decoration: InputDecoration(labelText: 'Bet Code'),
-                        //   validator: ,
-                        // onSaved: ,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Please fill this entry';
+                            }
+                          },
                         ),
-                      TextFormField(
-                        controller: oddsControl,
-                        keyboardType: TextInputType.number,
+                        TextFormField(
+                          controller: oddsControl,
+                          keyboardType: TextInputType.number,
                           decoration: InputDecoration(labelText: 'Bet Odd'),
-                        //   validator: ,
-                        // onSaved: ,
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Please fill this entry';
+                            }
+                          },
                         ),
-                      DateTimePicker(
-                        controller: timeControl,
-                        type: DateTimePickerType.time,
-                        timeLabelText: 'Earliest Game Time',
-                        // validator: ,
-                        // onSaved: ,
-                        onChanged: (value){print(value);},
-                      ),
-                    ],
+                        DateTimePicker(
+                          controller: timeControl,
+                          type: DateTimePickerType.time,
+                          timeLabelText: 'Earliest Game Time',
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Please fill this entry';
+                            }
+                          },
+                          onChanged: (value) {
+                            print(value);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -175,17 +209,46 @@ class _PublicCodesState extends State<PublicCodes> {
               ElevatedButton(
                 child: Text('Submit'),
                 onPressed: () {
-                  print(betCompanies);
+                  var keyForm = _keyForm.currentState;
+                  if (keyForm.validate()) {
+                    if (selectbetCompany == 'Select Platform') {
+                    } else if (selectSports == 'Select Sports') {
+                    } else {
+                      _uploadBet();
+                      _reset();
+                      Navigator.pop(context);
+                    }
+                  }
                 },
               ),
-              // ElevatedButton(
-              //   child: Text('Close'),
-              //   onPressed: () {
-              //     Navigator.pop(context);
-              //   },
-              // )
+              ElevatedButton(
+                child: Text('Close'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
             ],
           );
         });
   }
+
+  _uploadBet() async {
+    final String currentDate = DateFormat('yyyy-MM-dd').format(now);
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await stream.add({
+        'author': user.displayName,
+        'author_id': user.uid,
+        'company': selectbetCompany,
+        'betcode': betcodeControl.text,
+        'date': currentDate,
+        'odds': oddsControl.text,
+        'sports': selectSports,
+        'start': timeControl.text,
+        'timestamp': Timestamp.now().millisecondsSinceEpoch,
+      });
+    }
+  }
+
+  _reset() {}
 }
