@@ -41,30 +41,23 @@ class LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        // appBar: AppBar(
-        //   title: Text('Chat Section'),
-        //   centerTitle: true,
-        // ),
+        appBar: AppBar(
+          title: Text('Login'),
+          centerTitle: true,
+        ),
         body: user != null
             ? Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Continue as:'),
-                    Text('${user.displayName}'),
-                    Text('${user.email}'),
                     ElevatedButton(
-                      child: Text('Continue'),
+                      child: Text('Continue as'),
                       onPressed: () {
                         goto();
                       },
                     ),
-                    ElevatedButton(
-                      child: Text('Sign-in with another account'),
-                      onPressed: () {
-                        logout();
-                      },
-                    ),
+                    Text('${user.displayName}'),
+                    Text('${user.email}'),
                   ],
                 ),
               )
@@ -91,6 +84,10 @@ class _LoginGoogleState extends State<LoginGoogle> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          title: Text('Login'),
+          centerTitle: true,
+        ),
         body: Center(
           child: Container(
             child: ElevatedButton(

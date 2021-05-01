@@ -22,9 +22,9 @@ class _ChatBoxState extends State<ChatBox> {
           centerTitle: true,
           actions: [
             IconButton(
-              icon: Icon(Icons.add),
+              icon: Icon(Icons.more),
               onPressed: () {
-                return Navigator.of(context).pushReplacement(MaterialPageRoute(
+                return Navigator.of(context).push(MaterialPageRoute(
                     builder: (BuildContext context) => PublicCodes()));
               },
             )
@@ -40,7 +40,8 @@ class _ChatBoxState extends State<ChatBox> {
                 child: StreamBuilder<QuerySnapshot>(
                   stream: stream.
                   where('date', isEqualTo: currentDate)
-                  .orderBy('timestamp').snapshots(),
+                  // .orderBy('timestamp')
+                  .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       if (snapshot.data.docs.isEmpty) {
