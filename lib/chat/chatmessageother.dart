@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ChatMessageOther extends StatelessWidget {
   final int index;
   final Map<String, dynamic> data;
   final bool showAvatar;
   ChatMessageOther({this.index, this.data, this.showAvatar = true});
+  var format = DateFormat('HH:mm a');
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -54,6 +56,7 @@ class ChatMessageOther extends StatelessWidget {
                   height: 5,
                 ),
                 Text(data['value']),
+                Text(format.format(data['timestamp'].toDate()),style: TextStyle(fontSize: padding10),),
               ],
             ),
           )

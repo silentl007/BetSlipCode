@@ -49,7 +49,7 @@ class _PublicCodesState extends State<PublicCodes> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('ChatBox'),
+          title: Text('Public Bet Codes'),
           centerTitle: true,
           actions: [
             IconButton(
@@ -120,7 +120,7 @@ class _PublicCodesState extends State<PublicCodes> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Post Slip'),
+            title: Center(child: Text('Post Slip')),
             content: StatefulBuilder(
               builder: (context, StateSetter setState) {
                 return SingleChildScrollView(

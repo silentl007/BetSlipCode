@@ -24,9 +24,19 @@ class MessageWall extends StatelessWidget {
         final data = messages[index].data();
         final user = FirebaseAuth.instance.currentUser;
         if (user != null && user.uid == data['author_id']) {
-          return ChatMessage(
-            index: index,
-            data: data,
+          return Dismissible(
+            confirmDismiss: (DismissDirection direction) async {
+              return await _deleteAlert(context, messages[index].id);
+            },
+            // onDismissed: (_) {
+            //   _deleteAlert(context, messages[index].id);
+            //   // _deleteMessage(messages[index].id);
+            // },
+            key: ValueKey(data['timestamp']),
+            child: ChatMessage(
+              index: index,
+              data: data,
+            ),
           );
         } else {
           return ChatMessageOther(
@@ -94,7 +104,7 @@ class MessageWall extends StatelessWidget {
         'author_id': user.uid,
         'photo_url': user.photoURL ?? 'https://placeholder.com/150',
         'value': value,
-        'timestamp': Timestamp.now().millisecondsSinceEpoch,
+        'timestamp': Timestamp.now().toDate(),
         'date': date
       });
     }
@@ -104,6 +114,30 @@ class MessageWall extends StatelessWidget {
   _deleteMessage(String messageID) async {
     var stream = FirebaseFirestore.instance.collection('chat_messages');
     await stream.doc(messageID).delete();
+  }
+
+  _deleteAlert(BuildContext context, String messageID) {
+    return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text('Delete Message'),
+              content: Text('Are you sure you want to delete the message?'),
+              actions: [
+                ElevatedButton(
+                  child: Text('Yes'),
+                  onPressed: () {
+                    _deleteMessage(messageID);
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+                ElevatedButton(
+                  child: Text('No'),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                )
+              ],
+            ));
   }
 
   bool shouldShowAvatar(int indx) {

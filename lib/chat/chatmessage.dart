@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ChatMessage extends StatelessWidget {
   final int index;
   final Map<String, dynamic> data;
   ChatMessage({this.data, this.index});
+  var format = DateFormat('HH:mm a');
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -27,8 +29,15 @@ class ChatMessage extends StatelessWidget {
           constraints: BoxConstraints(maxWidth: maxWidth300),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
+            // color: Colors.blue
           ),
-          child: Text(data['value']),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(data['value']),
+              Text(format.format(data['timestamp'].toDate()), style: TextStyle(fontSize: padding10),),
+            ],
+          ),
         ),
       ],
     ));
