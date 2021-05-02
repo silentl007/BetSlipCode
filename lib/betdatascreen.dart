@@ -98,17 +98,7 @@ class _BetDataScreenState extends State<BetDataScreen> {
                           ],
                         ),
                         onTap: () {
-                          Fluttertoast.showToast(
-                              msg: "Odds copied to clipboard!",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.BOTTOM,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.white,
-                              textColor: Colors.black,
-                              fontSize: 16.0);
-
-                          Clipboard.setData(new ClipboardData(
-                              text: "${snapshot.data[index]['slipcode']}"));
+                          _toastCopyClipBoard(snapshot.data[index]['slipcode']);
                         },
                       ),
                     );
@@ -135,5 +125,17 @@ class _BetDataScreenState extends State<BetDataScreen> {
         }
       },
     );
+  }
+
+  _toastCopyClipBoard(String odds) {
+    Clipboard.setData(new ClipboardData(text: odds));
+    return Fluttertoast.showToast(
+        msg: "Bet code copied to clipboard!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.white,
+        textColor: Colors.black,
+        fontSize: 16.0);
   }
 }

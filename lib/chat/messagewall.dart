@@ -28,10 +28,6 @@ class MessageWall extends StatelessWidget {
             confirmDismiss: (DismissDirection direction) async {
               return await _deleteAlert(context, messages[index].id);
             },
-            // onDismissed: (_) {
-            //   _deleteAlert(context, messages[index].id);
-            //   // _deleteMessage(messages[index].id);
-            // },
             key: ValueKey(data['timestamp']),
             child: ChatMessage(
               index: index,

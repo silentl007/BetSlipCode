@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:date_time_picker/date_time_picker.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class PublicCodes extends StatefulWidget {
   @override
@@ -97,6 +99,9 @@ class _PublicCodesState extends State<PublicCodes> {
         // create a dismissable to remove an entry
         return Card(
           child: ListTile(
+            onTap: () {
+              _toastCopyClipBoard(data['betcode']);
+            },
             title: Text('From: ${data['author']}'),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,7 +113,6 @@ class _PublicCodesState extends State<PublicCodes> {
                 Text("Earliest game time: ${data['start']}"),
               ],
             ),
-            onTap: () {},
           ),
         );
       },
@@ -215,6 +219,7 @@ class _PublicCodesState extends State<PublicCodes> {
                     } else if (selectSports == 'Select Sports') {
                     } else {
                       _uploadBet();
+                      keyForm.reset();
                       _reset();
                       Navigator.pop(context);
                     }
@@ -237,7 +242,7 @@ class _PublicCodesState extends State<PublicCodes> {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       await stream.add({
-        'author': user.displayName,
+        'author': user.displayName ?? 'Anonymous',
         'author_id': user.uid,
         'company': selectbetCompany,
         'betcode': betcodeControl.text,
@@ -245,10 +250,27 @@ class _PublicCodesState extends State<PublicCodes> {
         'odds': oddsControl.text,
         'sports': selectSports,
         'start': timeControl.text,
-        'timestamp': Timestamp.now().millisecondsSinceEpoch,
+        'timestamp': Timestamp.now().toDate(),
       });
     }
   }
 
-  _reset() {}
+  _reset() {
+    setState(() {
+      selectbetCompany = 'Select Platform';
+      selectSports = 'Select Sports';
+    });
+  }
+
+  _toastCopyClipBoard(String odds) {
+    Clipboard.setData(new ClipboardData(text: odds));
+    return Fluttertoast.showToast(
+        msg: "Bet code copied to clipboard!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.white,
+        textColor: Colors.black,
+        fontSize: 16.0);
+  }
 }
