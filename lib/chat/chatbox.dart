@@ -49,7 +49,7 @@ class _ChatBoxState extends State<ChatBox> {
                           child: Text('No messages yet for today'),
                         );
                       }
-                      return MessageWall(messages: snapshot.data.docs);
+                      return MessageWall(messages: snapshot.data.docs, messagesLength: snapshot.data.docs.length);
                     }
                     return Center(
                       child: Text('loading'),

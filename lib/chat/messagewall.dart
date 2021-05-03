@@ -1,26 +1,35 @@
 import 'package:BetSlipCode/chat/chatmessage.dart';
 import 'package:BetSlipCode/chat/chatmessageother.dart';
+import 'package:BetSlipCode/model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class MessageWall extends StatelessWidget {
   final List<QueryDocumentSnapshot> messages;
-  MessageWall({this.messages});
-  final listKey = ScrollController();
+  final int messagesLength;
+  MessageWall({this.messages, this.messagesLength});
+  final ItemScrollController itemScrollController = ItemScrollController();
+  final ItemPositionsListener itemPositionsListener =
+      ItemPositionsListener.create();
   final TextEditingController _controller = TextEditingController();
+  int lastItemPosition;
   String _message;
   final DateTime now = DateTime.now();
   var stream = FirebaseFirestore.instance.collection('chat_messages');
-
   @override
   Widget build(BuildContext context) {
-    final String currentDate = DateFormat('yyyy-MM-dd').format(now);
-    return ListView.builder(
-      controller: listKey,
+    return ScrollablePositionedList.builder(
+      itemScrollController: itemScrollController,
+      itemPositionsListener: itemPositionsListener,
       itemCount: messages.length,
       itemBuilder: (context, index) {
+        lastItemPosition = messages.length;
+        Global().length = messages.length;
+        print('from inside build function ==> $Global().length');
+        print('from inside build function ==> $lastItemPosition');
         final data = messages[index].data();
         final user = FirebaseAuth.instance.currentUser;
         if (user != null && user.uid == data['author_id']) {
@@ -67,6 +76,7 @@ class MessageWall extends StatelessWidget {
                 //     UnderlineInputBorder(borderSide: BorderSide.none),
               ),
               onChanged: (text) {
+                print('==>   $text');
                 _message = text;
               },
             ),
@@ -83,12 +93,21 @@ class MessageWall extends StatelessWidget {
   }
 
   _send() {
-    if (_message.isEmpty || _message == null) {
-    } else {
-      _addMessage(_message);
-      _message = '';
-      _controller.clear();
-    }
+    print('from outside function ==> $Global().length');
+    print('from outside function ==> $lastItemPosition');
+    // itemScrollController.jumpTo();
+    //  SchedulerBinding.instance.addPostFrameCallback((_) {
+    //     _controller.jumpTo(_controller.position.maxScrollExtent);
+    //   });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   print(_scrollController.hasClients);
+    // });
+    // if ( _message == null ||  _message.isEmpty) {
+    // } else {
+    //   _addMessage(_message);
+    //   _message = '';
+    //   _controller.clear();
+    // }
   }
 
   void _addMessage(String value) async {
