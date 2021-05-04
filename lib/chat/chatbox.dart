@@ -11,6 +11,7 @@ class ChatBox extends StatefulWidget {
 
 class _ChatBoxState extends State<ChatBox> {
   final DateTime now = DateTime.now();
+  int lastItemPosition;
   var stream = FirebaseFirestore.instance.collection('chat_messages');
   @override
   Widget build(BuildContext context) {
@@ -38,18 +39,20 @@ class _ChatBoxState extends State<ChatBox> {
             children: [
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: stream.
-                  where('date', isEqualTo: currentDate)
-                  .orderBy('timestamp')
-                  .snapshots(),
+                  stream: stream
+                      .where('date', isEqualTo: currentDate)
+                      .orderBy('timestamp')
+                      .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       if (snapshot.data.docs.isEmpty) {
                         return Center(
                           child: Text('No messages yet for today'),
                         );
+                      } else {
+                        lastItemPosition = snapshot.data.docs.length;
+                        return MessageWall(messages: snapshot.data.docs);
                       }
-                      return MessageWall(messages: snapshot.data.docs, messagesLength: snapshot.data.docs.length);
                     }
                     return Center(
                       child: Text('loading'),
@@ -57,7 +60,7 @@ class _ChatBoxState extends State<ChatBox> {
                   },
                 ),
               ),
-              MessageWall().textspace()
+              MessageWall().textspace(lastItemPosition)
             ],
           ),
         ),

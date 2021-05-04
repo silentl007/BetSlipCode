@@ -3,7 +3,3 @@ class Check {
   bool isSelected = false;
   Check(this.company);
 }
-
-class Global {
-  int length;
-}
