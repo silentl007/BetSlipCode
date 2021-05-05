@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:BetSlipCode/betscreen.dart';
 import 'package:BetSlipCode/selector.dart';
 import 'package:flutter/material.dart';
@@ -124,9 +123,13 @@ class _HomeSelectState extends State<HomeSelect> {
             onPressed: () => proceed(),
           ),
           banner == null
-              ? SizedBox(
-                  height: sHeight,
-                )
+              ? Container(
+                color: Colors.red,
+                child: SizedBox(
+                    height: sHeight,
+                    child: CircularProgressIndicator()
+                  ),
+              )
               : Container(
                   height: sHeight,
                   child: AdWidget(

@@ -1,7 +1,12 @@
+import 'dart:async';
+
+import 'package:BetSlipCode/adsense.dart';
 import 'package:BetSlipCode/betdatascreen.dart';
 import 'package:BetSlipCode/chat/chatbox.dart';
 import 'package:BetSlipCode/home.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:provider/provider.dart';
 
 class BetScreen extends StatefulWidget {
   final List<String> selectedBetCompany;
@@ -11,6 +16,35 @@ class BetScreen extends StatefulWidget {
 }
 
 class _BetScreenState extends State<BetScreen> {
+  InterstitialAd interAd;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    startTimer();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    inAd();
+  }
+
+  inAd() {
+    final adsense = Provider.of<AdSense>(context);
+    interAd = InterstitialAd(
+        adUnitId: adsense.interstitialAdUnitID,
+        listener: adsense.adListener,
+        request: AdRequest())
+      ..load();
+  }
+
+  void startTimer() {
+    Timer(Duration(seconds: 3), () {
+      interAd.show();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
