@@ -95,6 +95,18 @@ class _BetDataScreenState extends State<BetDataScreen> {
                                 Text('${snapshot.data[index]['type']}'),
                               ],
                             ),
+                            Row(
+                              children: [
+                                Text('Sport: '),
+                                Text('${snapshot.data[index]['sport']}'),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text('Earliest Game Time: '),
+                                Text('${snapshot.data[index]['start']}'),
+                              ],
+                            ),
                           ],
                         ),
                         onTap: () {
