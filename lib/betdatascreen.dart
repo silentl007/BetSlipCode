@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
+import 'package:BetSlipCode/adsense.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -12,11 +15,13 @@ class BetDataScreen extends StatefulWidget {
 }
 
 class _BetDataScreenState extends State<BetDataScreen> {
+  InterstitialAd interAd;
   var get;
   @override
   void initState() {
     super.initState();
     get = _getCodes();
+    interLoad();
   }
 
   _getCodes() async {
@@ -45,6 +50,35 @@ class _BetDataScreenState extends State<BetDataScreen> {
       print(error);
       return null;
     }
+  }
+
+  void interLoad() {
+    interAd = InterstitialAd(
+      adUnitId: AdSense.interstitialAdUnitID,
+      request: AdRequest(),
+      listener: AdListener(
+        onAdLoaded: (ad) {
+          print('---------------------------------------');
+          print('Ad loaded: ${ad.adUnitId}');
+          print('---------------------------------------');
+        },
+        onAdFailedToLoad: (ad, error) {
+          print('---------------------------------------');
+          print('Add error: ${ad.adUnitId}, the error: $error');
+          print('---------------------------------------');
+        },
+      ),
+    );
+    interAd.load();
+    Timer(Duration(seconds: 3), () {
+      interAd.show();
+    });
+  }
+
+  @override
+  void dispose() {
+    interAd?.dispose();
+    super.dispose();
   }
 
   @override

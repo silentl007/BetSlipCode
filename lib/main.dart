@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
   }
 
   logged() {
-    print('--------------- $loggedIn ----------------');
+    // print('--------------- $loggedIn ----------------');
     if (loggedIn == null || false) {
       return IntroPage();
     } else

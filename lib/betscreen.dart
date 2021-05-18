@@ -14,40 +14,15 @@ class BetScreen extends StatefulWidget {
 }
 
 class _BetScreenState extends State<BetScreen> {
-  InterstitialAd interAd;
+  
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    interLoad();
-    startTimer();
+    
   }
 
-  void interLoad() {
-    interAd = InterstitialAd(
-      adUnitId: AdSense.interstitialAdUnitID,
-      request: AdRequest(),
-      listener: AdListener(
-        onAdLoaded: (ad) {
-          print('---------------------------------------');
-          print('Ad loaded: ${ad.adUnitId}');
-          print('---------------------------------------');
-        },
-        onAdFailedToLoad: (ad, error) {
-          print('---------------------------------------');
-          print('Add error: ${ad.adUnitId}, the error: $error');
-          print('---------------------------------------');
-        },
-      ),
-    );
-    interAd.load();
-  }
-
-  void startTimer() {
-    Timer(Duration(seconds: 5), () {
-      interAd.show();
-    });
-  }
+  
 
   @override
   Widget build(BuildContext context) {
