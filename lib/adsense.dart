@@ -4,9 +4,19 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 class AdSense {
   static String get bannerAdUnitID {
     if (Platform.isAndroid) {
-      return 'ca-app-pub-7315976017574578/4091946530';
+      return 'ca-app-pub-7315976017574578/7966778213';
     } else if (Platform.isIOS) {
+      return 'ca-app-pub-7315976017574578/6747714243';
+    } else {
       return '';
+    }
+  }
+
+  static String get bannerAdUnitIDTop {
+    if (Platform.isAndroid) {
+      return 'ca-app-pub-7315976017574578/2485035600';
+    } else if (Platform.isIOS) {
+      return 'ca-app-pub-7315976017574578/9784941125';
     } else {
       return '';
     }
@@ -14,9 +24,9 @@ class AdSense {
 
   static String get interstitialAdUnitID {
     if (Platform.isAndroid) {
-      return 'ca-app-pub-7315976017574578/1262603214';
+      return 'ca-app-pub-7315976017574578/8851612331';
     } else if (Platform.isIOS) {
-      return '';
+      return 'ca-app-pub-7315976017574578/5434632579';
     } else {
       return '';
     }

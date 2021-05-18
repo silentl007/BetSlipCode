@@ -70,7 +70,7 @@ class _BetDataScreenState extends State<BetDataScreen> {
       ),
     );
     interAd.load();
-    Timer(Duration(seconds: 3), () {
+    Timer(Duration(seconds: 5), () {
       interAd.show();
     });
   }
@@ -137,8 +137,20 @@ class _BetDataScreenState extends State<BetDataScreen> {
                             ),
                             Row(
                               children: [
+                                Text('Number of games: '),
+                                // Text('${snapshot.data[index]['sport']}'),
+                              ],
+                            ),
+                            Row(
+                              children: [
                                 Text('Earliest Game Time: '),
                                 Text('${snapshot.data[index]['start']}'),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text('Total Runtime: '),
+                                // Text('${snapshot.data[index]['sport']}'),
                               ],
                             ),
                           ],

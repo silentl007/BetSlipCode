@@ -15,6 +15,7 @@ class HomeSelect extends StatefulWidget {
 
 class _HomeSelectState extends State<HomeSelect> {
   BannerAd banner;
+  BannerAd bannerTop;
   bool loaded = false;
   var getComp;
   List<Check> betCompany = [];
@@ -24,6 +25,7 @@ class _HomeSelectState extends State<HomeSelect> {
   @override
   void dispose() {
     banner?.dispose();
+    bannerTop?.dispose();
     super.dispose();
   }
 
@@ -56,6 +58,19 @@ class _HomeSelectState extends State<HomeSelect> {
   }
 
   bannerLoad() {
+    bannerTop = BannerAd(
+        adUnitId: AdSense.bannerAdUnitIDTop,
+        size: AdSize.fullBanner,
+        request: AdRequest(keywords: ['bet', 'gamble']),
+        listener: AdListener(onAdLoaded: (_) {
+          // setState(() {
+          //   loaded = true;
+          // });
+        }, onAdFailedToLoad: (ad, error) {
+          print('---------------------------------------');
+          print('Add error: ${ad.adUnitId}, the error: $error');
+          print('---------------------------------------');
+        }));
     banner = BannerAd(
         adUnitId: AdSense.bannerAdUnitID,
         size: AdSize.fullBanner,
@@ -70,15 +85,16 @@ class _HomeSelectState extends State<HomeSelect> {
           print('---------------------------------------');
         }));
     banner.load();
+    bannerTop.load();
   }
 
-  bannerDisplay(double height) {
+  bannerDisplay(double height, BannerAd ad) {
     if (loaded) {
       return Container(
         height: height,
         width: double.infinity,
         child: AdWidget(
-          ad: banner,
+          ad: ad,
         ),
       );
     } else {
@@ -139,12 +155,13 @@ class _HomeSelectState extends State<HomeSelect> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          bannerDisplay(sHeight, bannerTop),
           Expanded(child: Choice(betcomp)),
           ElevatedButton(
             child: Text('Continue'),
             onPressed: () => proceed(),
           ),
-          bannerDisplay(sHeight)
+          bannerDisplay(sHeight, banner)
         ],
       ),
     );
