@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:BetSlipCode/adsense.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,6 +17,7 @@ class PublicCodes extends StatefulWidget {
 }
 
 class _PublicCodesState extends State<PublicCodes> {
+  bool loaded;
   InterstitialAd interAd;
   final _keyForm = GlobalKey<FormState>();
   final oddsControl = TextEditingController();
@@ -50,6 +53,7 @@ class _PublicCodesState extends State<PublicCodes> {
   }
 
   void interLoad() {
+    print('-------------- ad loading ----------');
     interAd = InterstitialAd(
       adUnitId: AdSense.interstitialAdUnitID,
       request: AdRequest(),
@@ -67,6 +71,7 @@ class _PublicCodesState extends State<PublicCodes> {
       ),
     );
     interAd.load();
+    loaded = true;
   }
 
   @override
@@ -82,7 +87,15 @@ class _PublicCodesState extends State<PublicCodes> {
               icon: Icon(Icons.add),
               onPressed: () {
                 _addPublicBet();
-                interAd.show();
+                if (loaded == true) {
+                  interAd.show();
+                  loaded = false;
+                } else {
+                  interLoad();
+                  Timer(Duration(seconds: 5), () {
+                    interAd.show();
+                  });
+                }
               },
             )
           ],

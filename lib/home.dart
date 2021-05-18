@@ -109,12 +109,6 @@ class _HomeSelectState extends State<HomeSelect> {
         appBar: AppBar(
           title: Text('Please Select'),
           centerTitle: true,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.logout),
-              onPressed: () {},
-            )
-          ],
         ),
         body: FutureBuilder(
           future: getComp,
