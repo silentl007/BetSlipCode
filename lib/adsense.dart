@@ -4,9 +4,9 @@ class AdSense {
   Future<InitializationStatus> initialization;
   AdSense(this.initialization);
 
-  String bannerAdUnitID = 'ca-app-pub-7315976017574578/3924336288';
+  String bannerAdUnitID = 'ca-app-pub-7315976017574578/4091946530';
   // String bannerAdUnitID = 'ca-app-pub-3940256099942544/6300978111'; // test
-  String interstitialAdUnitID = 'ca-app-pub-7315976017574578/2029181551';
+  String interstitialAdUnitID = 'ca-app-pub-7315976017574578/1262603214';
 
   AdListener get adListener => _adListener;
   AdListener _adListener = AdListener(

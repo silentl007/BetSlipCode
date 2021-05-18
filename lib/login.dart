@@ -15,7 +15,7 @@ class LoginState extends State<Login> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    initFire();
+    // initFire();
   }
 
   initFire() async {
@@ -45,7 +45,8 @@ class LoginState extends State<Login> {
           title: Text('Login'),
           centerTitle: true,
         ),
-        body: user != null
+        // body: user != null
+        body: user == null
             ? Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -56,8 +57,8 @@ class LoginState extends State<Login> {
                         goto();
                       },
                     ),
-                    Text('${user.displayName}'),
-                    Text('${user.email}'),
+                    Text('${ 'Anon'}'),
+                    Text('${ 'Anon@gmail.com'}'),
                   ],
                 ),
               )
@@ -83,23 +84,16 @@ class _LoginGoogleState extends State<LoginGoogle> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Login'),
-          centerTitle: true,
-        ),
-        body: Center(
-          child: Container(
-            child: ElevatedButton(
-              child: Text('Login with Google'),
-              onPressed: () {
-                signin();
-              },
-            ),
-          ),
+        child: Center(
+      child: Container(
+        child: ElevatedButton(
+          child: Text('Login with Google'),
+          onPressed: () {
+            signin();
+          },
         ),
       ),
-    );
+    ));
   }
 
   signin() async {

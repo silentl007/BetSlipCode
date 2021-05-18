@@ -16,16 +16,24 @@ class HomeSelect extends StatefulWidget {
 
 class _HomeSelectState extends State<HomeSelect> {
   BannerAd banner;
+  bool loaded = false;
   var getComp;
   List<Check> betCompany = [];
   List<String> selected = [];
   List<String> prefsBetCompanyList = [];
 
   @override
+  void dispose() {
+    banner?.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getComp = getCompanies();
+    // bannerFunc();
   }
 
   getCompanies() async {
@@ -45,6 +53,53 @@ class _HomeSelectState extends State<HomeSelect> {
       return betCompany;
     } catch (e) {
       return null;
+    }
+  }
+
+  // bannerFunc(){
+  //       final adstate = Provider.of<AdSense>(context);
+  //   adstate.initialization.then((status) {
+  //     setState(() {
+  //       banner = BannerAd(
+  //           adUnitId: adstate.bannerAdUnitID,
+  //           size: AdSize.banner,
+  //           request: AdRequest(keywords: ['bet', 'gamble']),
+  //           listener: adstate.adListener)
+  //         ..load();
+  //     });
+  //   });
+  // }
+
+  // bannerFunc() {
+  //   print('here');
+  //   banner = BannerAd(
+  //       adUnitId: AdSense().bannerAdUnitID,
+  //       size: AdSize.banner,
+  //       request: AdRequest(keywords: ['bet', 'gamble']),
+  //       listener:
+  //       AdListener(onAdLoaded: (_) {
+  //         setState(() {
+  //           loaded = true;
+  //         });
+  //       }, onAdFailedToLoad: (ad, error) {
+  //         print('---------------------------------------');
+  //         print('Add error: ${ad.adUnitId}, the error: $error');
+  //         print('---------------------------------------');
+  //       })
+
+  //       );
+  // }
+
+  loadAd() {
+    if (loaded) {
+      return Container(
+        width: banner.size.width.toDouble(),
+        child: AdWidget(
+          ad: banner,
+        ),
+      );
+    } else {
+      return CircularProgressIndicator();
     }
   }
 
@@ -122,20 +177,14 @@ class _HomeSelectState extends State<HomeSelect> {
             child: Text('Continue'),
             onPressed: () => proceed(),
           ),
-          banner == null
-              ? Container(
-                color: Colors.red,
-                child: SizedBox(
-                    height: sHeight,
-                    child: CircularProgressIndicator()
-                  ),
-              )
-              : Container(
-                  height: sHeight,
-                  child: AdWidget(
-                    ad: banner,
-                  ),
-                )
+          // loadAd()
+          Container(
+            height: sHeight,
+            width: double.infinity,
+            child: AdWidget(
+              ad: banner,
+            ),
+          )
         ],
       ),
     );

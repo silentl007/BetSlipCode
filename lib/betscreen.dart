@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:BetSlipCode/adsense.dart';
 import 'package:BetSlipCode/betdatascreen.dart';
 import 'package:BetSlipCode/chat/chatbox.dart';
@@ -21,26 +20,42 @@ class _BetScreenState extends State<BetScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    interAd = InterstitialAd(
+      adUnitId: 'ca-app-pub-7315976017574578/1262603214',
+      request: AdRequest(),
+      listener: AdListener(
+        onAdLoaded: (ad) => print('Ad loaded: ${ad.adUnitId}'),
+        onAdFailedToLoad: (ad, error) =>
+            print('Add error: ${ad.adUnitId}, the error: $error'),
+      ),
+    );
+    interAd.load();
     startTimer();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    inAd();
-  }
+  // @override
+  // void dispose() {
+  //   interAd?.dispose();
+  //   super.dispose();
+  // }
 
-  inAd() {
-    final adsense = Provider.of<AdSense>(context);
-    interAd = InterstitialAd(
-        adUnitId: adsense.interstitialAdUnitID,
-        listener: adsense.adListener,
-        request: AdRequest())
-      ..load();
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   final adstate = Provider.of<AdSense>(context);
+  //   adstate.initialization.then((status) {
+  //     setState(() {
+  //       interAd = InterstitialAd(
+  //           adUnitId: 'ca-app-pub-7315976017574578/1262603214',
+  //           request: AdRequest(keywords: ['bet', 'gamble']),
+  //           listener: adstate.adListener)
+  //         ..load();
+  //     });
+  //   });
+  // }
 
   void startTimer() {
-    Timer(Duration(seconds: 3), () {
+    Timer(Duration(seconds: 5), () {
       interAd.show();
     });
   }

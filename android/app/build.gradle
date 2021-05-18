@@ -65,4 +65,5 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:27.0.0') // added for firebase use
     implementation 'com.google.guava:guava:28.2-android' // added created a multidex error from ':app:checkDebugDuplicateClasses' error.
     implementation 'com.android.support:multidex:1.0.3' // added to combat multidex error
+    // implementation 'com.google.android.gms:play-services-ads:20.1.0' // admob sdk
 }
