@@ -1,6 +1,8 @@
+import 'package:BetSlipCode/adsense.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:date_time_picker/date_time_picker.dart';
@@ -13,6 +15,7 @@ class PublicCodes extends StatefulWidget {
 }
 
 class _PublicCodesState extends State<PublicCodes> {
+  InterstitialAd interAd;
   final _keyForm = GlobalKey<FormState>();
   final oddsControl = TextEditingController();
   final betcodeControl = TextEditingController();
@@ -38,11 +41,32 @@ class _PublicCodesState extends State<PublicCodes> {
     // TODO: implement initState
     super.initState();
     getPrefs();
+    interLoad();
   }
 
   getPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     betCompanies = prefs.getStringList('betCompany');
+  }
+
+  void interLoad() {
+    interAd = InterstitialAd(
+      adUnitId: AdSense.interstitialAdUnitID,
+      request: AdRequest(),
+      listener: AdListener(
+        onAdLoaded: (ad) {
+          print('---------------------------------------');
+          print('Ad loaded: ${ad.adUnitId}');
+          print('---------------------------------------');
+        },
+        onAdFailedToLoad: (ad, error) {
+          print('---------------------------------------');
+          print('Add error: ${ad.adUnitId}, the error: $error');
+          print('---------------------------------------');
+        },
+      ),
+    );
+    interAd.load();
   }
 
   @override
@@ -58,6 +82,7 @@ class _PublicCodesState extends State<PublicCodes> {
               icon: Icon(Icons.add),
               onPressed: () {
                 _addPublicBet();
+                interAd.show();
               },
             )
           ],
@@ -110,7 +135,9 @@ class _PublicCodesState extends State<PublicCodes> {
                 Text("Code: ${data['betcode']}"),
                 Text("Odds: ${data['odds']}"),
                 Text("Sports: ${data['sports']}"),
+                // Text("Number of games: ${data['totalgames']}"),
                 Text("Earliest game time: ${data['start']}"),
+                // Text("Total Runtime: ${data['totalruntime']}"),
               ],
             ),
           ),
@@ -250,6 +277,8 @@ class _PublicCodesState extends State<PublicCodes> {
         'odds': oddsControl.text,
         'sports': selectSports,
         'start': timeControl.text,
+        // 'totalruntime':
+        // 'totalgames':
         'timestamp': Timestamp.now().toDate(),
       });
     }
