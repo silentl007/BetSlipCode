@@ -58,7 +58,7 @@ class _HomeSelectState extends State<HomeSelect> {
   bannerLoad() {
     banner = BannerAd(
         adUnitId: AdSense.bannerAdUnitID,
-        size: AdSize.banner,
+        size: AdSize.fullBanner,
         request: AdRequest(keywords: ['bet', 'gamble']),
         listener: AdListener(onAdLoaded: (_) {
           setState(() {

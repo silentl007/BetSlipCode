@@ -5,7 +5,6 @@ import 'package:BetSlipCode/chat/chatbox.dart';
 import 'package:BetSlipCode/home.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:provider/provider.dart';
 
 class BetScreen extends StatefulWidget {
   final List<String> selectedBetCompany;
