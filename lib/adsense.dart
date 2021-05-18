@@ -1,12 +1,27 @@
+import 'dart:io';
+
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AdSense {
-  Future<InitializationStatus> initialization;
-  AdSense(this.initialization);
+  static String get bannerAdUnitID {
+    if (Platform.isAndroid) {
+      return 'ca-app-pub-7315976017574578/4091946530';
+    } else if (Platform.isIOS) {
+      return '';
+    } else {
+      return '';
+    }
+  }
 
-  String bannerAdUnitID = 'ca-app-pub-7315976017574578/4091946530';
-  // String bannerAdUnitID = 'ca-app-pub-3940256099942544/6300978111'; // test
-  String interstitialAdUnitID = 'ca-app-pub-7315976017574578/1262603214';
+  static String get interstitialAdUnitID {
+    if (Platform.isAndroid) {
+      return 'ca-app-pub-7315976017574578/1262603214';
+    } else if (Platform.isIOS) {
+      return '';
+    } else {
+      return '';
+    }
+  }
 
   AdListener get adListener => _adListener;
   AdListener _adListener = AdListener(

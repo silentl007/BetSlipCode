@@ -1,11 +1,10 @@
 import 'dart:convert';
+import 'package:BetSlipCode/adsense.dart';
 import 'package:BetSlipCode/betscreen.dart';
 import 'package:BetSlipCode/selector.dart';
 import 'package:flutter/material.dart';
 import 'package:BetSlipCode/model.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:provider/provider.dart';
-import 'package:BetSlipCode/adsense.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -33,7 +32,7 @@ class _HomeSelectState extends State<HomeSelect> {
     // TODO: implement initState
     super.initState();
     getComp = getCompanies();
-    // bannerFunc();
+    bannerLoad();
   }
 
   getCompanies() async {
@@ -56,44 +55,28 @@ class _HomeSelectState extends State<HomeSelect> {
     }
   }
 
-  // bannerFunc(){
-  //       final adstate = Provider.of<AdSense>(context);
-  //   adstate.initialization.then((status) {
-  //     setState(() {
-  //       banner = BannerAd(
-  //           adUnitId: adstate.bannerAdUnitID,
-  //           size: AdSize.banner,
-  //           request: AdRequest(keywords: ['bet', 'gamble']),
-  //           listener: adstate.adListener)
-  //         ..load();
-  //     });
-  //   });
-  // }
+  bannerLoad() {
+    banner = BannerAd(
+        adUnitId: AdSense.bannerAdUnitID,
+        size: AdSize.banner,
+        request: AdRequest(keywords: ['bet', 'gamble']),
+        listener: AdListener(onAdLoaded: (_) {
+          setState(() {
+            loaded = true;
+          });
+        }, onAdFailedToLoad: (ad, error) {
+          print('---------------------------------------');
+          print('Add error: ${ad.adUnitId}, the error: $error');
+          print('---------------------------------------');
+        }));
+    banner.load();
+  }
 
-  // bannerFunc() {
-  //   print('here');
-  //   banner = BannerAd(
-  //       adUnitId: AdSense().bannerAdUnitID,
-  //       size: AdSize.banner,
-  //       request: AdRequest(keywords: ['bet', 'gamble']),
-  //       listener:
-  //       AdListener(onAdLoaded: (_) {
-  //         setState(() {
-  //           loaded = true;
-  //         });
-  //       }, onAdFailedToLoad: (ad, error) {
-  //         print('---------------------------------------');
-  //         print('Add error: ${ad.adUnitId}, the error: $error');
-  //         print('---------------------------------------');
-  //       })
-
-  //       );
-  // }
-
-  loadAd() {
+  bannerDisplay(double height) {
     if (loaded) {
       return Container(
-        width: banner.size.width.toDouble(),
+        height: height,
+        width: double.infinity,
         child: AdWidget(
           ad: banner,
         ),
@@ -101,22 +84,6 @@ class _HomeSelectState extends State<HomeSelect> {
     } else {
       return CircularProgressIndicator();
     }
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final adstate = Provider.of<AdSense>(context);
-    adstate.initialization.then((status) {
-      setState(() {
-        banner = BannerAd(
-            adUnitId: adstate.bannerAdUnitID,
-            size: AdSize.banner,
-            request: AdRequest(keywords: ['bet', 'gamble']),
-            listener: adstate.adListener)
-          ..load();
-      });
-    });
   }
 
   @override
@@ -177,14 +144,7 @@ class _HomeSelectState extends State<HomeSelect> {
             child: Text('Continue'),
             onPressed: () => proceed(),
           ),
-          // loadAd()
-          Container(
-            height: sHeight,
-            width: double.infinity,
-            child: AdWidget(
-              ad: banner,
-            ),
-          )
+          bannerDisplay(sHeight)
         ],
       ),
     );

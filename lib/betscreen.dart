@@ -20,39 +20,29 @@ class _BetScreenState extends State<BetScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    interAd = InterstitialAd(
-      adUnitId: 'ca-app-pub-7315976017574578/1262603214',
-      request: AdRequest(),
-      listener: AdListener(
-        onAdLoaded: (ad) => print('Ad loaded: ${ad.adUnitId}'),
-        onAdFailedToLoad: (ad, error) =>
-            print('Add error: ${ad.adUnitId}, the error: $error'),
-      ),
-    );
-    interAd.load();
+    interLoad();
     startTimer();
   }
 
-  // @override
-  // void dispose() {
-  //   interAd?.dispose();
-  //   super.dispose();
-  // }
-
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //   final adstate = Provider.of<AdSense>(context);
-  //   adstate.initialization.then((status) {
-  //     setState(() {
-  //       interAd = InterstitialAd(
-  //           adUnitId: 'ca-app-pub-7315976017574578/1262603214',
-  //           request: AdRequest(keywords: ['bet', 'gamble']),
-  //           listener: adstate.adListener)
-  //         ..load();
-  //     });
-  //   });
-  // }
+  void interLoad() {
+    interAd = InterstitialAd(
+      adUnitId: AdSense.interstitialAdUnitID,
+      request: AdRequest(),
+      listener: AdListener(
+        onAdLoaded: (ad) {
+          print('---------------------------------------');
+          print('Ad loaded: ${ad.adUnitId}');
+          print('---------------------------------------');
+        },
+        onAdFailedToLoad: (ad, error) {
+          print('---------------------------------------');
+          print('Add error: ${ad.adUnitId}, the error: $error');
+          print('---------------------------------------');
+        },
+      ),
+    );
+    interAd.load();
+  }
 
   void startTimer() {
     Timer(Duration(seconds: 5), () {
