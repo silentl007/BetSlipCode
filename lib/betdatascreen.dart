@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 import 'package:BetSlipCode/adsense.dart';
 import 'package:flutter/material.dart';
@@ -60,6 +59,7 @@ class _BetDataScreenState extends State<BetDataScreen> {
         onAdLoaded: (ad) {
           print('---------------------------------------');
           print('Ad loaded: ${ad.adUnitId}');
+          interAd.show();
           print('---------------------------------------');
         },
         onAdFailedToLoad: (ad, error) {
@@ -70,9 +70,11 @@ class _BetDataScreenState extends State<BetDataScreen> {
       ),
     );
     interAd.load();
-    Timer(Duration(seconds: 5), () {
-      interAd.show();
-    });
+
+    // Timer(Duration(seconds: 3), () {
+    //   interAd.show();
+    //   print('show ad---------------------------------------------------');
+    // });
   }
 
   @override
@@ -98,6 +100,7 @@ class _BetDataScreenState extends State<BetDataScreen> {
             ],
           );
         } else if (snapshot.hasData) {
+          // interAd.show();
           return snapshot.data.length > 0
               ? ListView.builder(
                   itemCount: snapshot.data.length,

@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "810514184313-0m9kgvocmj1fqteeq047lskkjvjas08o.apps.googleusercontent.com",
+          "client_id": "810514184313-i1gn57t734imo60ds3djnlrdvd8k8ic0.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.BetSlipCode",
-            "certificate_hash": "7254e0b0af0b00a202c437c5e170177870fac3fe"
+            "certificate_hash": "9c68ce45f41c0762d019c39587571c4ff2dc51cc"
           }
         },
         {

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:BetSlipCode/adsense.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -41,7 +40,6 @@ class _PublicCodesState extends State<PublicCodes> {
   var stream = FirebaseFirestore.instance.collection('public_betslip');
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getPrefs();
     interLoad();
@@ -214,6 +212,7 @@ class _PublicCodesState extends State<PublicCodes> {
                         TextFormField(
                           controller: betcodeControl,
                           decoration: InputDecoration(labelText: 'Bet Code'),
+                          // ignore: missing_return
                           validator: (value) {
                             if (value.isEmpty) {
                               return 'Please fill this entry';
@@ -224,16 +223,19 @@ class _PublicCodesState extends State<PublicCodes> {
                           controller: oddsControl,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(labelText: 'Bet Odd'),
+                          // ignore: missing_return
                           validator: (value) {
-                            if (value.isEmpty) {
+                            if (value.isEmpty) 
                               return 'Please fill this entry';
-                            }
+                            
                           },
                         ),
                         DateTimePicker(
+                          
                           controller: timeControl,
                           type: DateTimePickerType.time,
                           timeLabelText: 'Earliest Game Time',
+                          // ignore: missing_return
                           validator: (value) {
                             if (value.isEmpty) {
                               return 'Please fill this entry';

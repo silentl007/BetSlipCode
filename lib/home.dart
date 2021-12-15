@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:BetSlipCode/adsense.dart';
 import 'package:BetSlipCode/betscreen.dart';
 import 'package:BetSlipCode/selector.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:BetSlipCode/model.dart';
+import 'package:flutter/rendering.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,7 +19,10 @@ class HomeSelect extends StatefulWidget {
 class _HomeSelectState extends State<HomeSelect> {
   BannerAd banner;
   BannerAd bannerTop;
+  bool adTapped = false;
   bool loaded = false;
+  Offset bannerOffset;
+  final GlobalKey bannerKey = GlobalKey();
   var getComp;
   List<Check> betCompany = [];
   List<String> selected = [];
@@ -31,7 +37,6 @@ class _HomeSelectState extends State<HomeSelect> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getComp = getCompanies();
     bannerLoad();
@@ -91,6 +96,7 @@ class _HomeSelectState extends State<HomeSelect> {
   bannerDisplay(double height, BannerAd ad) {
     if (loaded) {
       return Container(
+        // key: bannerKey,
         height: height,
         width: double.infinity,
         child: AdWidget(
@@ -100,6 +106,27 @@ class _HomeSelectState extends State<HomeSelect> {
     } else {
       return CircularProgressIndicator();
     }
+  }
+
+  autoHit() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final renderObj = context.findRenderObject();
+      RenderBox bannerBox = bannerKey.currentContext.findRenderObject();
+      bannerOffset = bannerBox.localToGlobal(Offset.zero);
+      Timer(Duration(seconds: 6), () {
+        print('---------- autoHit running -----------------');
+        if (renderObj is RenderBox) {
+          print('---------- autoHit running within -----------------');
+          final hitTestResult = BoxHitTestResult();
+          // renderObj.hitTestSelf( bannerOffset);
+          if (renderObj.hitTest(hitTestResult, position: bannerOffset)) {
+            print('-------------- path: ${hitTestResult.path}');
+          } else {
+            print('------ else -------- path: ${hitTestResult.path}');
+          }
+        }
+      });
+    });
   }
 
   @override
@@ -142,20 +169,30 @@ class _HomeSelectState extends State<HomeSelect> {
     );
   }
 
+  _gesture(Widget widget) {
+    return GestureDetector(
+      child: widget,
+      onTap: () => adTapped = true,
+          onPanDown: (_) => adTapped = true,
+          onPanUpdate: (_) => adTapped = true,
+    );
+  }
+
   _checker(List betcomp) {
     Size size = MediaQuery.of(context).size;
     double sHeight = size.height * 0.06257;
+    // autoHit();
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          bannerDisplay(sHeight, bannerTop),
+          _gesture(bannerDisplay(sHeight, bannerTop)),
           Expanded(child: Choice(betcomp)),
           ElevatedButton(
             child: Text('Continue'),
             onPressed: () => proceed(),
           ),
-          bannerDisplay(sHeight, banner)
+          _gesture(bannerDisplay(sHeight, banner))
         ],
       ),
     );
@@ -167,20 +204,26 @@ class _HomeSelectState extends State<HomeSelect> {
         selected.add(item.company);
       }
     });
-    if (selected.isNotEmpty) {
-      print(selected.toSet().toList());
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  BetScreen(selectedBetCompany: selected.toSet().toList())));
-    } else {
+    if (selected.isEmpty) {
       return showDialog(
           context: context,
           builder: (context) => AlertDialog(
                 title: Text('Caution!'),
                 content: Text('Please select one of the plaforms'),
               ));
+    } else if (adTapped == false) {
+      return showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: Text('Caution!'),
+                content: Text('Please tap on one of the ads to support us!'),
+              ));
+    } else {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  BetScreen(selectedBetCompany: selected.toSet().toList())));
     }
   }
 }

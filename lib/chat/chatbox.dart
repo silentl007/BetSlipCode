@@ -19,7 +19,7 @@ class _ChatBoxState extends State<ChatBox> {
       ItemPositionsListener.create();
   final TextEditingController _controller = TextEditingController();
   String _message;
-  int lastItemPosition;
+  int lastItemPosition = 1;
   var stream = FirebaseFirestore.instance.collection('chat_messages');
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class _ChatBoxState extends State<ChatBox> {
         ),
         body: WillPopScope(
           onWillPop: () {
-            _alert();
+            return _alert();
           },
           child: Column(
             children: [
@@ -59,6 +59,7 @@ class _ChatBoxState extends State<ChatBox> {
                         );
                       } else {
                         lastItemPosition = snapshot.data.docs.length;
+                        print('position ------------$lastItemPosition first');
                         return messageWall(snapshot.data.docs);
                       }
                     }
@@ -147,10 +148,11 @@ class _ChatBoxState extends State<ChatBox> {
   _send() {
     if (_message == null || _message.isEmpty) {
     } else {
+      print('position ------------$lastItemPosition');
       _addMessage(_message);
       _message = '';
       _controller.clear();
-      itemScrollController.jumpTo(index: lastItemPosition);
+      // itemScrollController.jumpTo(index: lastItemPosition);
     }
   }
 

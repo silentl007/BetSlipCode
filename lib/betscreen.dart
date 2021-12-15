@@ -1,10 +1,7 @@
-import 'dart:async';
-import 'package:BetSlipCode/adsense.dart';
 import 'package:BetSlipCode/betdatascreen.dart';
 import 'package:BetSlipCode/chat/chatbox.dart';
 import 'package:BetSlipCode/home.dart';
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class BetScreen extends StatefulWidget {
   final List<String> selectedBetCompany;
@@ -17,7 +14,6 @@ class _BetScreenState extends State<BetScreen> {
   
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     
   }
