@@ -1,6 +1,6 @@
-import 'package:BetSlipCode/betdatascreen.dart';
-import 'package:BetSlipCode/chat/chatbox.dart';
-import 'package:BetSlipCode/home.dart';
+import 'package:code_realm/betdatascreen.dart';
+import 'package:code_realm/chat/chatbox.dart';
+import 'package:code_realm/home.dart';
 import 'package:flutter/material.dart';
 
 class BetScreen extends StatefulWidget {

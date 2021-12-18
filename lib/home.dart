@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:BetSlipCode/adsense.dart';
-import 'package:BetSlipCode/betscreen.dart';
-import 'package:BetSlipCode/selector.dart';
+import 'package:code_realm/adsense.dart';
+import 'package:code_realm/betscreen.dart';
+import 'package:code_realm/selector.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:BetSlipCode/model.dart';
+import 'package:code_realm/model.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;

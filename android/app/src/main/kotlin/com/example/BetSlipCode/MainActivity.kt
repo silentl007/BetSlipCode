@@ -1,4 +1,4 @@
-package com.example.BetSlipCode
+package com.realm.coderealm
 
 import io.flutter.embedding.android.FlutterActivity
 

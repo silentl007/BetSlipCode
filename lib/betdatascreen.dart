@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:BetSlipCode/adsense.dart';
+import 'package:code_realm/adsense.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
@@ -32,21 +32,10 @@ class _BetDataScreenState extends State<BetDataScreen> {
         if (decode.isEmpty) {
           return decode;
         } else {
-          if (widget.company == 'Bet9ja') {
-            return decode[0]['Bet9ja'];
-          } else if (widget.company == 'SportyBet') {
-            return decode[0]['SportyBet'];
-          } else if (widget.company == 'NairaBet') {
-            return decode[0]['NairaBet'];
-          } else if (widget.company == 'OnexBet') {
-            return decode[0]['OnexBet'];
-          } else {
-            return [];
-          }
+         return decode[0][widget.company];
         }
       }
     } catch (error) {
-      print(error);
       return null;
     }
   }
@@ -70,11 +59,6 @@ class _BetDataScreenState extends State<BetDataScreen> {
       ),
     );
     interAd.load();
-
-    // Timer(Duration(seconds: 3), () {
-    //   interAd.show();
-    //   print('show ad---------------------------------------------------');
-    // });
   }
 
   @override
@@ -100,7 +84,6 @@ class _BetDataScreenState extends State<BetDataScreen> {
             ],
           );
         } else if (snapshot.hasData) {
-          // interAd.show();
           return snapshot.data.length > 0
               ? ListView.builder(
                   itemCount: snapshot.data.length,
@@ -128,32 +111,20 @@ class _BetDataScreenState extends State<BetDataScreen> {
                             ),
                             Row(
                               children: [
-                                Text('Type: '),
-                                Text('${snapshot.data[index]['type']}'),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text('Sport: '),
+                                Text('Sport Type: '),
                                 Text('${snapshot.data[index]['sport']}'),
                               ],
                             ),
                             Row(
                               children: [
-                                Text('Number of games: '),
-                                // Text('${snapshot.data[index]['sport']}'),
+                                Text('Earliest Game Date: '),
+                                Text('${snapshot.data[index]['startdate']}'),
                               ],
                             ),
                             Row(
                               children: [
                                 Text('Earliest Game Time: '),
                                 Text('${snapshot.data[index]['start']}'),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text('Total Runtime: '),
-                                // Text('${snapshot.data[index]['sport']}'),
                               ],
                             ),
                           ],

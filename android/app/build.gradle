@@ -39,7 +39,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.BetSlipCode"
+        applicationId "com.realm.coderealm"
         minSdkVersion 21 // changed to 21
         targetSdkVersion 30 // previously 30 changed to 28 because of genymotion
         versionCode flutterVersionCode.toInteger()

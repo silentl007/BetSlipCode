@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:BetSlipCode/adsense.dart';
+import 'package:code_realm/adsense.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +22,7 @@ class _PublicCodesState extends State<PublicCodes> {
   final oddsControl = TextEditingController();
   final betcodeControl = TextEditingController();
   final timeControl = TextEditingController();
+  final dateControl = TextEditingController();
   final DateTime now = DateTime.now();
   String selectSports = 'Select Sports';
   String selectbetCompany = 'Select Platform';
@@ -146,9 +147,8 @@ class _PublicCodesState extends State<PublicCodes> {
                 Text("Code: ${data['betcode']}"),
                 Text("Odds: ${data['odds']}"),
                 Text("Sports: ${data['sports']}"),
-                // Text("Number of games: ${data['totalgames']}"),
+                Text("Earliest date time: ${data['startdate']}"),
                 Text("Earliest game time: ${data['start']}"),
-                // Text("Total Runtime: ${data['totalruntime']}"),
               ],
             ),
           ),
@@ -225,13 +225,23 @@ class _PublicCodesState extends State<PublicCodes> {
                           decoration: InputDecoration(labelText: 'Bet Odd'),
                           // ignore: missing_return
                           validator: (value) {
-                            if (value.isEmpty) 
-                              return 'Please fill this entry';
-                            
+                            if (value.isEmpty) return 'Please fill this entry';
                           },
                         ),
                         DateTimePicker(
-                          
+                          controller: dateControl,
+                          type: DateTimePickerType.date,
+                          firstDate: DateTime(now.year, now.month, now.day),
+                          lastDate: DateTime(2300),
+                          dateLabelText: 'Earliest Game Date',
+                          // ignore: missing_return
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Please fill this entry';
+                            }
+                          },
+                        ),
+                        DateTimePicker(
                           controller: timeControl,
                           type: DateTimePickerType.time,
                           timeLabelText: 'Earliest Game Time',
@@ -240,9 +250,6 @@ class _PublicCodesState extends State<PublicCodes> {
                             if (value.isEmpty) {
                               return 'Please fill this entry';
                             }
-                          },
-                          onChanged: (value) {
-                            print(value);
                           },
                         ),
                       ],
@@ -292,6 +299,7 @@ class _PublicCodesState extends State<PublicCodes> {
         'odds': oddsControl.text,
         'sports': selectSports,
         'start': timeControl.text,
+        'startdate': dateControl.text,
         // 'totalruntime':
         // 'totalgames':
         'timestamp': Timestamp.now().toDate(),

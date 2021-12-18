@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:BetSlipCode/model.dart';
+import 'package:code_realm/model.dart';
 
 class Choice extends StatefulWidget {
   final List<Check> companies;
