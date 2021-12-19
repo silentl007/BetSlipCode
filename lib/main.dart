@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-bool loggedIn;
+bool? loggedIn;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await logged();
@@ -16,19 +16,19 @@ void main() async {
 
 logged() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  loggedIn = prefs.getBool('isLogged');
+  loggedIn = prefs.getBool('isLogged') ?? false;
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(theme: ThemeData.dark(), home: logged());
+    return MaterialApp(theme: ThemeData.dark(), home: log());
   }
 
-  logged() {
-    if (loggedIn == null || false) {
+  log() {
+    if (loggedIn == null ||loggedIn == false) {
       return IntroPage();
-    } else
-      return HomeSelect();
+    } else{
+      return HomeSelect();}
   }
 }

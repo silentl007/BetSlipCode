@@ -3,8 +3,8 @@ import 'package:intl/intl.dart';
 
 // ignore: must_be_immutable
 class ChatMessageOther extends StatelessWidget {
-  final int index;
-  final Map<String, dynamic> data;
+  final int? index;
+  final Map<String, dynamic>? data;
   final bool showAvatar;
   ChatMessageOther({this.index, this.data, this.showAvatar = true});
   var format = DateFormat('HH:mm a');
@@ -24,7 +24,7 @@ class ChatMessageOther extends StatelessWidget {
         children: [
           if (showAvatar)
             CircleAvatar(
-              backgroundImage: NetworkImage(data['photo_url']),
+              backgroundImage: NetworkImage(data!['photo_url']),
             )
           else
             SizedBox(
@@ -47,7 +47,7 @@ class ChatMessageOther extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${data['author']} said:',
+                  '${data!['author']} said:',
                   style: TextStyle(
                       fontStyle: FontStyle.italic,
                       fontSize: font12,
@@ -56,8 +56,8 @@ class ChatMessageOther extends StatelessWidget {
                 SizedBox(
                   height: 5,
                 ),
-                Text(data['value']),
-                Text(format.format(data['timestamp'].toDate()),style: TextStyle(fontSize: padding10),),
+                Text(data!['value']),
+                Text(format.format(data!['timestamp'].toDate()),style: TextStyle(fontSize: padding10),),
               ],
             ),
           )

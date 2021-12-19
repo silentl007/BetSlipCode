@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 import 'package:code_realm/adsense.dart';
 import 'package:code_realm/betscreen.dart';
@@ -17,11 +16,11 @@ class HomeSelect extends StatefulWidget {
 }
 
 class _HomeSelectState extends State<HomeSelect> {
-  BannerAd banner;
-  BannerAd bannerTop;
+  BannerAd? banner;
+  BannerAd? bannerTop;
   bool adTapped = false;
   bool loaded = false;
-  Offset bannerOffset;
+  Offset? bannerOffset;
   final GlobalKey bannerKey = GlobalKey();
   var getComp;
   List<Check> betCompany = [];
@@ -89,8 +88,8 @@ class _HomeSelectState extends State<HomeSelect> {
           print('Add error: ${ad.adUnitId}, the error: $error');
           print('---------------------------------------');
         }));
-    banner.load();
-    bannerTop.load();
+    banner!.load();
+    bannerTop!.load();
   }
 
   bannerDisplay(double height, BannerAd ad) {
@@ -108,35 +107,11 @@ class _HomeSelectState extends State<HomeSelect> {
     }
   }
 
-  autoHit() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final renderObj = context.findRenderObject();
-      RenderBox bannerBox = bannerKey.currentContext.findRenderObject();
-      bannerOffset = bannerBox.localToGlobal(Offset.zero);
-      Timer(Duration(seconds: 6), () {
-        print('---------- autoHit running -----------------');
-        if (renderObj is RenderBox) {
-          print('---------- autoHit running within -----------------');
-          final hitTestResult = BoxHitTestResult();
-          // renderObj.hitTestSelf( bannerOffset);
-          if (renderObj.hitTest(hitTestResult, position: bannerOffset)) {
-            print('-------------- path: ${hitTestResult.path}');
-          } else {
-            print('------ else -------- path: ${hitTestResult.path}');
-          }
-        }
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('Please Select'),
-          centerTitle: true,
-        ),
+        appBar: UserWidgets().appbar(appBarName: 'Select Bookies', context: context),
         body: FutureBuilder(
           future: getComp,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -144,7 +119,7 @@ class _HomeSelectState extends State<HomeSelect> {
               return Center(
                 child: CircularProgressIndicator(
                   valueColor:
-                      new AlwaysStoppedAnimation<Color>(Colors.blue[200]),
+                      new AlwaysStoppedAnimation<Color>(Colors.blue[200]!),
                   backgroundColor: Colors.grey[300],
                   strokeWidth: 2.0,
                 ),
@@ -173,29 +148,86 @@ class _HomeSelectState extends State<HomeSelect> {
     return GestureDetector(
       child: widget,
       onTap: () => adTapped = true,
-          onPanDown: (_) => adTapped = true,
-          onPanUpdate: (_) => adTapped = true,
+      onPanDown: (_) => adTapped = true,
+      onPanUpdate: (_) => adTapped = true,
     );
   }
 
   _checker(List betcomp) {
-    Size size = MediaQuery.of(context).size;
-    double sHeight = size.height * 0.06257;
-    // autoHit();
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _gesture(bannerDisplay(sHeight, bannerTop)),
-          Expanded(child: Choice(betcomp)),
-          ElevatedButton(
-            child: Text('Continue'),
-            onPressed: () => proceed(),
-          ),
-          _gesture(bannerDisplay(sHeight, banner))
-        ],
+      body: Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage('assets/background.png'), fit: BoxFit.cover)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _gesture(bannerDisplay(Sizes.h70, bannerTop!)),
+            Expanded(child: Choice(betcomp)),
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(Sizes.w20)),
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color.fromARGB(
+                        255,
+                        0,
+                        103,
+                        255,
+                      ),
+                      Color.fromARGB(
+                        255,
+                        68,
+                        196,
+                        251,
+                      ),
+                      Color.fromARGB(
+                        220,
+                        34,
+                        122,
+                        255,
+                      ),
+                      Color.fromARGB(
+                        255,
+                        0,
+                        102,
+                        255,
+                      ),
+                    ],
+                  )),
+              width: Sizes.w200,
+              child: ElevatedButton(
+                style: Decorations().buttonDecor(
+                    context: context,
+                    buttoncolor: Colors.transparent,
+                    bordercolor: Colors.transparent,
+                    bordercurver: 0),
+                child: Text(
+                  'Continue',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: Sizes.w20,
+                      fontWeight: FontWeight.bold),
+                ),
+                onPressed: () => proceed(),
+              ),
+            ),
+            Divider(
+              height: Sizes.h40,
+            ),
+            _gesture(bannerDisplay(Sizes.h70, banner!))
+          ],
+        ),
       ),
     );
+  }
+
+  textStyling() {
+    return TextStyle(
+        color: Colors.black, fontSize: Sizes.w20, fontWeight: FontWeight.bold);
   }
 
   proceed() {
@@ -208,15 +240,23 @@ class _HomeSelectState extends State<HomeSelect> {
       return showDialog(
           context: context,
           builder: (context) => AlertDialog(
-                title: Text('Caution!'),
-                content: Text('Please select one of the plaforms'),
+                backgroundColor: Colors.white,
+                content: Text(
+                  'Please select one of the plaforms',
+                  textAlign: TextAlign.center,
+                  style: textStyling(),
+                ),
               ));
     } else if (adTapped == false) {
       return showDialog(
           context: context,
           builder: (context) => AlertDialog(
-                title: Text('Caution!'),
-                content: Text('Please tap on one of the ads to support us!'),
+                backgroundColor: Colors.white,
+                content: Text(
+                  'PLEASE SELECT AN AD',
+                  textAlign: TextAlign.center,
+                  style: textStyling(),
+                ),
               ));
     } else {
       Navigator.pushReplacement(

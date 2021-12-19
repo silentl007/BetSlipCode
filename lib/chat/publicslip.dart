@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/services.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:fluttertoast/fluttertoast.dart';
 
 class PublicCodes extends StatefulWidget {
@@ -16,8 +17,8 @@ class PublicCodes extends StatefulWidget {
 }
 
 class _PublicCodesState extends State<PublicCodes> {
-  bool loaded;
-  InterstitialAd interAd;
+  bool? loaded;
+  InterstitialAd? interAd;
   final _keyForm = GlobalKey<FormState>();
   final oddsControl = TextEditingController();
   final betcodeControl = TextEditingController();
@@ -48,7 +49,7 @@ class _PublicCodesState extends State<PublicCodes> {
 
   getPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    betCompanies = prefs.getStringList('betCompany');
+    betCompanies = prefs.getStringList('betCompany')!;
   }
 
   void interLoad() {
@@ -69,7 +70,7 @@ class _PublicCodesState extends State<PublicCodes> {
         },
       ),
     );
-    interAd.load();
+    interAd!.load();
     loaded = true;
   }
 
@@ -87,12 +88,12 @@ class _PublicCodesState extends State<PublicCodes> {
               onPressed: () {
                 _addPublicBet();
                 if (loaded == true) {
-                  interAd.show();
+                  interAd!.show();
                   loaded = false;
                 } else {
                   interLoad();
                   Timer(Duration(seconds: 5), () {
-                    interAd.show();
+                    interAd!.show();
                   });
                 }
               },
@@ -109,12 +110,12 @@ class _PublicCodesState extends State<PublicCodes> {
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      if (snapshot.data.docs.isEmpty) {
+                      if (snapshot.data!.docs.isEmpty) {
                         return Center(
                           child: Text('No bet codes from the public right now'),
                         );
                       }
-                      return _listView(snapshot.data.docs);
+                      return _listView(snapshot.data!.docs);
                     }
                     return Center(
                       child: Text('loading'),
@@ -185,7 +186,7 @@ class _PublicCodesState extends State<PublicCodes> {
                             }).toList(),
                             onChanged: (text) {
                               setState(() {
-                                selectbetCompany = text;
+                                selectbetCompany = text!;
                               });
                             },
                           ),
@@ -204,7 +205,7 @@ class _PublicCodesState extends State<PublicCodes> {
                             }).toList(),
                             onChanged: (text) {
                               setState(() {
-                                selectSports = text;
+                                selectSports = text!;
                               });
                             },
                           ),
@@ -214,7 +215,7 @@ class _PublicCodesState extends State<PublicCodes> {
                           decoration: InputDecoration(labelText: 'Bet Code'),
                           // ignore: missing_return
                           validator: (value) {
-                            if (value.isEmpty) {
+                            if (value!.isEmpty) {
                               return 'Please fill this entry';
                             }
                           },
@@ -225,7 +226,7 @@ class _PublicCodesState extends State<PublicCodes> {
                           decoration: InputDecoration(labelText: 'Bet Odd'),
                           // ignore: missing_return
                           validator: (value) {
-                            if (value.isEmpty) return 'Please fill this entry';
+                            if (value!.isEmpty) return 'Please fill this entry';
                           },
                         ),
                         DateTimePicker(
@@ -236,7 +237,7 @@ class _PublicCodesState extends State<PublicCodes> {
                           dateLabelText: 'Earliest Game Date',
                           // ignore: missing_return
                           validator: (value) {
-                            if (value.isEmpty) {
+                            if (value!.isEmpty) {
                               return 'Please fill this entry';
                             }
                           },
@@ -247,7 +248,7 @@ class _PublicCodesState extends State<PublicCodes> {
                           timeLabelText: 'Earliest Game Time',
                           // ignore: missing_return
                           validator: (value) {
-                            if (value.isEmpty) {
+                            if (value!.isEmpty) {
                               return 'Please fill this entry';
                             }
                           },
@@ -263,7 +264,7 @@ class _PublicCodesState extends State<PublicCodes> {
                 child: Text('Submit'),
                 onPressed: () {
                   var keyForm = _keyForm.currentState;
-                  if (keyForm.validate()) {
+                  if (keyForm!.validate()) {
                     if (selectbetCompany == 'Select Platform') {
                     } else if (selectSports == 'Select Sports') {
                     } else {

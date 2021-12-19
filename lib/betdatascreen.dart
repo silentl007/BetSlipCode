@@ -14,7 +14,7 @@ class BetDataScreen extends StatefulWidget {
 }
 
 class _BetDataScreenState extends State<BetDataScreen> {
-  InterstitialAd interAd;
+  InterstitialAd? interAd;
   var get;
   @override
   void initState() {
@@ -48,7 +48,7 @@ class _BetDataScreenState extends State<BetDataScreen> {
         onAdLoaded: (ad) {
           print('---------------------------------------');
           print('Ad loaded: ${ad.adUnitId}');
-          interAd.show();
+          interAd!.show();
           print('---------------------------------------');
         },
         onAdFailedToLoad: (ad, error) {
@@ -58,7 +58,7 @@ class _BetDataScreenState extends State<BetDataScreen> {
         },
       ),
     );
-    interAd.load();
+    interAd!.load();
   }
 
   @override
@@ -77,7 +77,7 @@ class _BetDataScreenState extends State<BetDataScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               CircularProgressIndicator(
-                valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue[200]),
+                valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue[200]!),
                 backgroundColor: Colors.grey[300],
                 strokeWidth: 2.0,
               ),

@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 class ChatMessage extends StatelessWidget {
   final int index;
   final Map<String, dynamic> data;
-  ChatMessage({this.data, this.index});
+  ChatMessage({required this.data,required this.index});
   var format = DateFormat('HH:mm a');
   @override
   Widget build(BuildContext context) {

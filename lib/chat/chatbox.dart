@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:code_realm/chat/chatmessage.dart';
 import 'package:code_realm/chat/chatmessageother.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class ChatBox extends StatefulWidget {
@@ -18,7 +19,7 @@ class _ChatBoxState extends State<ChatBox> {
   final ItemPositionsListener itemPositionsListener =
       ItemPositionsListener.create();
   final TextEditingController _controller = TextEditingController();
-  String _message;
+  String? _message;
   int lastItemPosition = 1;
   var stream = FirebaseFirestore.instance.collection('chat_messages');
   @override
@@ -33,7 +34,7 @@ class _ChatBoxState extends State<ChatBox> {
             IconButton(
               icon: Icon(Icons.more),
               onPressed: () {
-                return Navigator.of(context).push(MaterialPageRoute(
+                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (BuildContext context) => PublicCodes()));
               },
             )
@@ -53,14 +54,14 @@ class _ChatBoxState extends State<ChatBox> {
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      if (snapshot.data.docs.isEmpty) {
+                      if (snapshot.data!.docs.isEmpty) {
                         return Center(
                           child: Text('No messages yet for today'),
                         );
                       } else {
-                        lastItemPosition = snapshot.data.docs.length;
+                        lastItemPosition = snapshot.data!.docs.length;
                         print('position ------------$lastItemPosition first');
-                        return messageWall(snapshot.data.docs);
+                        return messageWall(snapshot.data!.docs);
                       }
                     }
                     return Center(
@@ -146,10 +147,10 @@ class _ChatBoxState extends State<ChatBox> {
   }
 
   _send() {
-    if (_message == null || _message.isEmpty) {
+    if (_message == null || _message!.isEmpty) {
     } else {
       print('position ------------$lastItemPosition');
-      _addMessage(_message);
+      _addMessage(_message!);
       _message = '';
       _controller.clear();
       // itemScrollController.jumpTo(index: lastItemPosition);
