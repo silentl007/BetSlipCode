@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:code_realm/adsense.dart';
+import 'package:code_realm/model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
@@ -21,6 +23,37 @@ class _BetDataScreenState extends State<BetDataScreen> {
     super.initState();
     get = _getCodes();
     interLoad();
+    colorTheme();
+  }
+
+  Color? colorCode = Colors.white;
+
+  colorTheme() {
+    if (widget.company == 'Bet9ja') {
+      setState(() {
+        colorCode = Colors.green;
+      });
+    } else if (widget.company == 'OnexBet') {
+      setState(() {
+        colorCode = Colors.blue;
+      });
+    } else if (widget.company == 'SportyBet') {
+      setState(() {
+        colorCode = Colors.red;
+      });
+    } else if (widget.company == 'NairaBet') {
+      setState(() {
+        colorCode = Colors.blue[800];
+      });
+    } else if (widget.company == 'MerryBet') {
+      setState(() {
+        colorCode = Colors.orange;
+      });
+    } else {
+      setState(() {
+        colorCode = Colors.white;
+      });
+    }
   }
 
   _getCodes() async {
@@ -32,7 +65,7 @@ class _BetDataScreenState extends State<BetDataScreen> {
         if (decode.isEmpty) {
           return decode;
         } else {
-         return decode[0][widget.company];
+          return decode[0][widget.company];
         }
       }
     } catch (error) {
@@ -73,85 +106,151 @@ class _BetDataScreenState extends State<BetDataScreen> {
       future: get,
       builder: (context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              CircularProgressIndicator(
-                valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue[200]!),
-                backgroundColor: Colors.grey[300],
-                strokeWidth: 2.0,
-              ),
-            ],
+          return Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('assets/background.png'),
+                    fit: BoxFit.cover)),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                UserWidgets().loading(),
+              ],
+            ),
           );
         } else if (snapshot.hasData) {
           return snapshot.data.length > 0
-              ? ListView.builder(
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (context, int index) {
-                    return Card(
-                      color: Colors.transparent,
-                      child: ListTile(
-                        leading: Icon(
-                          Icons.double_arrow,
-                          color: Colors.white,
-                        ),
-                        title: Row(
-                          children: [
-                            Text('Code: '),
-                            Text('${snapshot.data[index]['slipcode']}'),
-                          ],
-                        ),
-                        subtitle: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Text('Odds: '),
-                                Text('${snapshot.data[index]['odds']}'),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text('Sport Type: '),
-                                Text('${snapshot.data[index]['sport']}'),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text('Earliest Game Date: '),
-                                Text('${snapshot.data[index]['startdate']}'),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text('Earliest Game Time: '),
-                                Text('${snapshot.data[index]['start']}'),
-                              ],
-                            ),
-                          ],
-                        ),
+              ? Container(
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage('assets/background.png'),
+                          fit: BoxFit.cover)),
+                  child: ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, int index) {
+                      return GestureDetector(
                         onTap: () {
                           _toastCopyClipBoard(snapshot.data[index]['slipcode']);
                         },
-                      ),
-                    );
-                  },
+                        child: Column(
+                          children: [
+                            Container(
+                              color: Color.fromRGBO(44, 44, 44, 1),
+                              height: Sizes.h90,
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        top:Sizes.h20, left: Sizes.w40, right: Sizes.w40),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              '${snapshot.data[index]['slipcode']}',
+                                              style: TextStyle(
+                                                  fontSize: Sizes.w22,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(
+                                              '${snapshot.data[index]['sport']}',
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                  fontSize: Sizes.w10,
+                                                  color: colorCode,
+                                                  fontWeight:
+                                                      FontWeight.normal),
+                                            ),
+                                            Text(
+                                              'EARLIEST GAME TIME:  ${snapshot.data[index]['start']}',
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                  fontSize: Sizes.w10,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Divider(
+                                              height: Sizes.h2,
+                                            ),
+                                            Text(
+                                              'EARLIEST GAME DATE:  ${snapshot.data[index]['startdate']}',
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                  fontSize: Sizes.w10,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                              '${snapshot.data[index]['odds']}',
+                                              style: TextStyle(
+                                                  fontSize: Sizes.w18,
+                                                  fontWeight:
+                                                      FontWeight.bold),
+                                            ),
+                                            Text(
+                                              'ODDS',
+                                              textAlign: TextAlign.right,
+                                              style: TextStyle(
+                                                  fontSize: Sizes.w10,
+                                                  color: colorCode,
+                                                  fontWeight:
+                                                      FontWeight.normal),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Container(
+                              color: Color.fromRGBO(78, 78, 78, 1),
+                              height: 1,
+                              width: double.infinity,
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 )
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('Sorry, no bet codes uploaded yet!'),
-                    Text('Please try again or check other platforms')
-                  ],
+              : Container(
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage('assets/background.png'),
+                          fit: BoxFit.cover)),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Sorry, no bet codes uploaded yet!'),
+                      Text('Please try again or check other platforms')
+                    ],
+                  ),
                 );
         } else {
-          return Center(
-            child: ElevatedButton(
-              child: Text('Retry'),
-              onPressed: () {
-                setState(() {
-                  get = _getCodes();
-                });
-              },
+          return Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('assets/background.png'),
+                    fit: BoxFit.cover)),
+            child: Center(
+              child: ElevatedButton(
+                child: Text('Retry'),
+                onPressed: () {
+                  setState(() {
+                    get = _getCodes();
+                  });
+                },
+              ),
             ),
           );
         }
@@ -162,12 +261,11 @@ class _BetDataScreenState extends State<BetDataScreen> {
   _toastCopyClipBoard(String odds) {
     Clipboard.setData(new ClipboardData(text: odds));
     return Fluttertoast.showToast(
-        msg: "Bet code copied to clipboard!",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.white,
-        textColor: Colors.black,
-        fontSize: 16.0);
+        msg: "Bet code copied",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.TOP,
+        backgroundColor: Colors.black,
+        textColor: Colors.white,
+        fontSize: Sizes.w16);
   }
 }

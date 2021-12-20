@@ -26,7 +26,7 @@ class _HomeSelectState extends State<HomeSelect> {
   List<Check> betCompany = [];
   List<String> selected = [];
   List<String> prefsBetCompanyList = [];
-
+  List<String> prefsSportsList = [];
   @override
   void dispose() {
     banner?.dispose();
@@ -48,12 +48,16 @@ class _HomeSelectState extends State<HomeSelect> {
       var getList = await http.get(link);
       if (getList.statusCode == 200) {
         var decode = jsonDecode(getList.body);
+
         for (var data in decode[0]['company']) {
           prefsBetCompanyList.add(data);
           betCompany.add(Check(data));
         }
+        decode[0]['sports'].forEach((string) => prefsSportsList.add(string));
         prefsBetCompanyList.insert(0, 'Select Platform');
+        prefsSportsList.insert(0, 'Select Sports');
         prefs.setStringList('betCompany', prefsBetCompanyList);
+        prefs.setStringList('sportCompany', prefsSportsList);
       }
       return betCompany;
     } catch (e) {
@@ -66,15 +70,13 @@ class _HomeSelectState extends State<HomeSelect> {
         adUnitId: AdSense.bannerAdUnitIDTop,
         size: AdSize.fullBanner,
         request: AdRequest(keywords: ['bet', 'gamble']),
-        listener: AdListener(onAdLoaded: (_) {
-          // setState(() {
-          //   loaded = true;
-          // });
-        }, onAdFailedToLoad: (ad, error) {
-          print('---------------------------------------');
-          print('Add error: ${ad.adUnitId}, the error: $error');
-          print('---------------------------------------');
-        }));
+        listener: AdListener(
+            onAdLoaded: (_) {},
+            onAdFailedToLoad: (ad, error) {
+              print('---------------------------------------');
+              print('Add error: ${ad.adUnitId}, the error: $error');
+              print('---------------------------------------');
+            }));
     banner = BannerAd(
         adUnitId: AdSense.bannerAdUnitID,
         size: AdSize.fullBanner,
@@ -111,30 +113,51 @@ class _HomeSelectState extends State<HomeSelect> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: UserWidgets().appbar(appBarName: 'Select Bookies', context: context),
+        appBar: UserWidgets()
+            .appbar(appBarName: 'Select Bookies', context: context),
         body: FutureBuilder(
           future: getComp,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState != ConnectionState.done) {
-              return Center(
-                child: CircularProgressIndicator(
-                  valueColor:
-                      new AlwaysStoppedAnimation<Color>(Colors.blue[200]!),
-                  backgroundColor: Colors.grey[300],
-                  strokeWidth: 2.0,
+              return Container(
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage('assets/background.png'),
+                        fit: BoxFit.cover)),
+                child: Center(
+                  child: UserWidgets().loading(),
                 ),
               );
             } else if (snapshot.hasData) {
               return _checker(snapshot.data);
             } else {
-              return Center(
-                child: ElevatedButton(
-                  child: Text('Retry'),
-                  onPressed: () {
-                    setState(() {
-                      getComp = getCompanies();
-                    });
-                  },
+              return Container(
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage('assets/background.png'),
+                        fit: BoxFit.cover)),
+                child: Center(
+                  child: SizedBox(
+                    width: Sizes.w200,
+                    height: Sizes.h40,
+                    child: ElevatedButton(
+                      child: Text('Retry'),
+                      style: Decorations().buttonDecor(
+                          context: context,
+                          buttoncolor: Colors.blue,
+                          bordercurver: Sizes.w20,
+                          bordercolor: Colors.blue),
+                      onPressed: () {
+                        setState(() {
+                          betCompany = [];
+                          selected = [];
+                          prefsBetCompanyList = [];
+                          getComp = getCompanies();
+                          bannerLoad();
+                        });
+                      },
+                    ),
+                  ),
                 ),
               );
             }

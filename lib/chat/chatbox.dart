@@ -1,11 +1,11 @@
 import 'package:code_realm/chat/publicslip.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:code_realm/model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:code_realm/chat/chatmessage.dart';
 import 'package:code_realm/chat/chatmessageother.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class ChatBox extends StatefulWidget {
@@ -27,51 +27,50 @@ class _ChatBoxState extends State<ChatBox> {
     final String currentDate = DateFormat('yyyy-MM-dd').format(now);
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('ChatBox'),
-          centerTitle: true,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.more),
-              onPressed: () {
-                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => PublicCodes()));
-              },
-            )
-          ],
-        ),
+        appBar: UserWidgets().appbar(
+            appBarName: 'Chatroom', context: context, actionBar: action()),
         body: WillPopScope(
           onWillPop: () {
             return _alert();
           },
-          child: Column(
-            children: [
-              Expanded(
-                child: StreamBuilder<QuerySnapshot>(
-                  stream: stream
-                      .where('date', isEqualTo: currentDate)
-                      .orderBy('timestamp')
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      if (snapshot.data!.docs.isEmpty) {
-                        return Center(
-                          child: Text('No messages yet for today'),
-                        );
-                      } else {
-                        lastItemPosition = snapshot.data!.docs.length;
-                        print('position ------------$lastItemPosition first');
-                        return messageWall(snapshot.data!.docs);
+          child: Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('assets/background.png'),
+                    fit: BoxFit.cover)),
+            child: Column(
+              children: [
+                Expanded(
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: stream
+                        .where('date', isEqualTo: currentDate)
+                        .orderBy('timestamp')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        if (snapshot.data!.docs.isEmpty) {
+                          return Center(
+                            child: Text(
+                              'No messages yet for today.\nBe the first!',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: Sizes.w20),
+                            ),
+                          );
+                        } else {
+                          lastItemPosition = snapshot.data!.docs.length;
+                          print('position ------------$lastItemPosition first');
+                          return messageWall(snapshot.data!.docs);
+                        }
                       }
-                    }
-                    return Center(
-                      child: Text('loading'),
-                    );
-                  },
+                      return Center(
+                        child: UserWidgets().loading(),
+                      );
+                    },
+                  ),
                 ),
-              ),
-              textspace()
-            ],
+                textspace()
+              ],
+            ),
           ),
         ),
       ),
@@ -109,40 +108,40 @@ class _ChatBoxState extends State<ChatBox> {
   }
 
   textspace() {
-    return Container(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          SizedBox(
-            width: 5,
-          ),
-          Expanded(
-            child: TextField(
-              controller: _controller,
-              // focusNode: ,
-              minLines: 1,
-              maxLines: 3,
-              decoration: InputDecoration(
-                // border: ,
-                icon: Icon(Icons.keyboard),
-                hintText: 'Type a message',
-                // focusedBorder:
-                //     UnderlineInputBorder(borderSide: BorderSide.none),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        SizedBox(
+          width: Sizes.w5,
+        ),
+        Expanded(
+          child: TextField(
+            textCapitalization: TextCapitalization.sentences,
+            controller: _controller,
+            cursorColor: Colors.white,
+            minLines: 1,
+            maxLines: 3,
+            decoration: InputDecoration(
+              icon: Icon(
+                Icons.keyboard,
+                color: Colors.white,
               ),
-              onChanged: (text) {
-                // print('==>   $text');
-                _message = text;
-              },
+              hintText: 'Type a message',
+              focusedBorder:
+                  UnderlineInputBorder(borderSide: BorderSide.none),
             ),
-          ),
-          IconButton(
-            icon: Icon(Icons.send),
-            onPressed: () {
-              _send();
+            onChanged: (value){
+              _message = value;
             },
           ),
-        ],
-      ),
+        ),
+        IconButton(
+          icon: Icon(Icons.send),
+          onPressed: () {
+            _send();
+          },
+        ),
+      ],
     );
   }
 
@@ -153,7 +152,7 @@ class _ChatBoxState extends State<ChatBox> {
       _addMessage(_message!);
       _message = '';
       _controller.clear();
-      // itemScrollController.jumpTo(index: lastItemPosition);
+      itemScrollController.jumpTo(index: lastItemPosition);
     }
   }
 
@@ -234,5 +233,18 @@ class _ChatBoxState extends State<ChatBox> {
                 )
               ],
             ));
+  }
+
+  Widget action() {
+    return IconButton(
+      icon: ImageIcon(
+        AssetImage('assets/publiccode.png'),
+        color: Colors.white,
+      ),
+      onPressed: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) => PublicCodes()));
+      },
+    );
   }
 }

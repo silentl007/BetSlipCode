@@ -1,3 +1,4 @@
+import 'package:code_realm/auth/googleauth.dart';
 import 'package:code_realm/home.dart';
 import 'package:code_realm/intro.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ bool? loggedIn;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await logged();
+  await Authenticate().initialize();
   MobileAds.instance.initialize();
   runApp(
     MyApp(),

@@ -10,16 +10,8 @@ class Login extends StatefulWidget {
 }
 
 class LoginState extends State<Login> {
-  @override
-  void initState() {
-    super.initState();
-    initFire();
-  }
+ 
 
-  initFire() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await Authenticate().initialize();
-  }
 
   String logging = 'login';
 
@@ -101,14 +93,7 @@ class LoginState extends State<Login> {
                       ),
                     ],
                   )
-                : Container(
-                    child: CircularProgressIndicator(
-                      valueColor:
-                          new AlwaysStoppedAnimation<Color>(Colors.blue[200]!),
-                      backgroundColor: Colors.grey[300],
-                      strokeWidth: 2.0,
-                    ),
-                  ),
+                : UserWidgets().loading(),
           ),
         ),
       ),

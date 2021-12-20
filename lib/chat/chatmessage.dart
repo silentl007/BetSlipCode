@@ -1,3 +1,4 @@
+import 'package:code_realm/model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -5,38 +6,43 @@ import 'package:intl/intl.dart';
 class ChatMessage extends StatelessWidget {
   final int index;
   final Map<String, dynamic> data;
-  ChatMessage({required this.data,required this.index});
+  ChatMessage({required this.data, required this.index});
   var format = DateFormat('HH:mm a');
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    double maxWidth300 = size.height * 0.3755;
-    double padding10 = size.height * 0.01251;
-    double padding12 = size.height * 0.015;
+   Sizes().heightSizeCalc(context);
+    Sizes().widthSizeCalc(context);
     return Container(
         child: Row(
       mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
+           width: Sizes.w250,
           margin: EdgeInsets.only(
-            left: padding10,
-            right: padding10,
+            left: Sizes.w10,
+            right: Sizes.w10,
           ),
           padding: EdgeInsets.symmetric(
-            horizontal: padding10,
-            vertical: padding12,
+            horizontal: Sizes.w10,
+            vertical: Sizes.h12,
           ),
-          constraints: BoxConstraints(maxWidth: maxWidth300),
+          constraints: BoxConstraints(maxWidth: Sizes.w300),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
-            // color: Colors.blue
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(data['value']),
-              Text(format.format(data['timestamp'].toDate()), style: TextStyle(fontSize: padding10),),
+              Text(
+                data['value'],
+                textAlign: TextAlign.justify,
+                style: TextStyle(height: 1.2, fontSize: Sizes.w15),
+              ),Divider(height: Sizes.h3,),
+              Text(
+                format.format(data['timestamp'].toDate()),
+                style: TextStyle(fontSize: Sizes.w10, color: Colors.red),
+              ),
             ],
           ),
         ),

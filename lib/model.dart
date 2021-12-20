@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Check {
@@ -7,18 +8,37 @@ class Check {
 }
 
 class UserWidgets {
-  appbar({required String appBarName, required BuildContext context}) {
+  appbar(
+      {required String appBarName,
+      required BuildContext context,
+      Widget? actionBar}) {
     Sizes().widthSizeCalc(context);
     Sizes().heightSizeCalc(context);
     return AppBar(
-      title: Text(appBarName),
+      title: Text(
+        appBarName,
+        style: TextStyle(fontSize: Sizes.w25, fontWeight: FontWeight.bold),
+      ),
       centerTitle: true,
       toolbarHeight: Sizes.h100,
+      actions: appBarName == 'Select Bookies' ? null : [actionBar!],
       flexibleSpace: Image(
-        image: AssetImage('assets/appbar.png'),
+        image: AssetImage(appBarName == 'Chatroom'
+            ? 'assets/chatroomappbar.png'
+            : 'assets/appbar.png'),
         fit: BoxFit.cover,
       ),
       backgroundColor: Colors.transparent,
+    );
+  }
+
+  loading() {
+    return Container(
+      child: CircularProgressIndicator(
+        valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue[200]!),
+        backgroundColor: Colors.grey[300],
+        strokeWidth: 2.0,
+      ),
     );
   }
 }
@@ -40,6 +60,24 @@ class Decorations {
         shape: RoundedRectangleBorder(
             borderRadius:
                 BorderRadius.all(Radius.circular(bordercurver ?? w5))));
+  }
+
+  formDecor(String hint, BuildContext context) {
+    Sizes().widthSizeCalc(context);
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: TextStyle(color: Color.fromRGBO(146, 146, 146, 1)),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(Sizes.w20),
+        borderSide: BorderSide(
+          width: 0,
+          style: BorderStyle.none,
+        ),
+      ),
+      filled: true,
+      fillColor: Color.fromRGBO(55, 55, 55, 1),
+      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+    );
   }
 }
 
@@ -92,6 +130,7 @@ class Sizes {
   static double h44 = 0;
   static double h165 = 0;
   static double h330 = 0;
+  static double h90 = 0;
   // Width
   static double w40 = 0;
   static double w180 = 0;
@@ -233,5 +272,6 @@ class Sizes {
     h44 = size! * .05506;
     h165 = size! * .2065;
     h330 = size! * .4130162;
+    h90 = size! * .112640;
   }
 }

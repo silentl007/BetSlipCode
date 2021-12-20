@@ -1,14 +1,16 @@
 import 'dart:async';
 import 'package:code_realm/adsense.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:code_realm/model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/services.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:fluttertoast/fluttertoast.dart';
 
 class PublicCodes extends StatefulWidget {
@@ -28,15 +30,7 @@ class _PublicCodesState extends State<PublicCodes> {
   String selectSports = 'Select Sports';
   String selectbetCompany = 'Select Platform';
   List<String> betCompanies = [];
-  List<String> sports = [
-    'Select Sports',
-    'Mixed',
-    'Soccer',
-    'Rugby',
-    'Basketball',
-    'Tennis',
-    'Formula 1'
-  ];
+  List<String> sports = [];
   Color platformColor = Colors.white;
   Color sportsColor = Colors.white;
   var stream = FirebaseFirestore.instance.collection('public_betslip');
@@ -50,10 +44,26 @@ class _PublicCodesState extends State<PublicCodes> {
   getPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     betCompanies = prefs.getStringList('betCompany')!;
+    sports = prefs.getStringList('sportCompany')!;
+  }
+
+  colorTheme(String company) {
+    if (company == 'Bet9ja') {
+      return Colors.green;
+    } else if (company == 'OnexBet') {
+      return Colors.blue;
+    } else if (company == 'SportyBet') {
+      return Colors.red;
+    } else if (company == 'NairaBet') {
+      return Colors.blue[800];
+    } else if (company == 'MerryBet') {
+      return Colors.orange;
+    } else {
+      return Colors.white;
+    }
   }
 
   void interLoad() {
-    print('-------------- ad loading ----------');
     interAd = InterstitialAd(
       adUnitId: AdSense.interstitialAdUnitID,
       request: AdRequest(),
@@ -74,56 +84,69 @@ class _PublicCodesState extends State<PublicCodes> {
     loaded = true;
   }
 
+  actionButton() {
+    return IconButton(
+      icon: ImageIcon(
+        AssetImage('assets/add.png'),
+        color: Colors.white,
+      ),
+      onPressed: () {
+        _addPublicBet();
+        if (loaded == true) {
+          interAd!.show();
+          loaded = false;
+        } else {
+          interLoad();
+          Timer(Duration(seconds: 5), () {
+            interAd!.show();
+          });
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final String currentDate = DateFormat('yyyy-MM-dd').format(now);
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('Public Bet Codes'),
-          centerTitle: true,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () {
-                _addPublicBet();
-                if (loaded == true) {
-                  interAd!.show();
-                  loaded = false;
-                } else {
-                  interLoad();
-                  Timer(Duration(seconds: 5), () {
-                    interAd!.show();
-                  });
-                }
-              },
-            )
-          ],
-        ),
-        body: Column(
-          children: [
-            Expanded(
-              child: StreamBuilder<QuerySnapshot>(
-                  stream: stream
-                      .where('date', isEqualTo: currentDate)
-                      .orderBy('timestamp')
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      if (snapshot.data!.docs.isEmpty) {
-                        return Center(
-                          child: Text('No bet codes from the public right now'),
-                        );
+        appBar: UserWidgets().appbar(
+            appBarName: 'Public Betcodes',
+            context: context,
+            actionBar: actionButton()),
+        body: Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage('assets/background.png'),
+                  fit: BoxFit.cover)),
+          child: Column(
+            children: [
+              Expanded(
+                child: StreamBuilder<QuerySnapshot>(
+                    stream: stream
+                        .where('date', isEqualTo: currentDate)
+                        .orderBy('timestamp')
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        if (snapshot.data!.docs.isEmpty) {
+                          return Center(
+                            child: Text(
+                                'No bet codes from the public right now',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: Sizes.w20)),
+                          );
+                        }
+                        return _listView(snapshot.data!.docs);
                       }
-                      return _listView(snapshot.data!.docs);
-                    }
-                    return Center(
-                      child: Text('loading'),
-                    );
-                  }),
-            ),
-            Container()
-          ],
+                      return Center(
+                        child: UserWidgets().loading(),
+                      );
+                    }),
+              ),
+              Container()
+            ],
+          ),
         ),
       ),
     );
@@ -135,23 +158,112 @@ class _PublicCodesState extends State<PublicCodes> {
       itemBuilder: (context, index) {
         final data = publicbets[index].data();
         // create a dismissable to remove an entry
-        return Card(
-          child: ListTile(
-            onTap: () {
-              _toastCopyClipBoard(data['betcode']);
-            },
-            title: Text('From: ${data['author']}'),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Platform: ${data['company']}"),
-                Text("Code: ${data['betcode']}"),
-                Text("Odds: ${data['odds']}"),
-                Text("Sports: ${data['sports']}"),
-                Text("Earliest date time: ${data['startdate']}"),
-                Text("Earliest game time: ${data['start']}"),
-              ],
-            ),
+        return GestureDetector(
+          onTap: () {
+            _toastCopyClipBoard(data['betcode']);
+          },
+          child: Column(
+            children: [
+              Container(
+                  height: Sizes.h120,
+                  color: Colors.transparent,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: Padding(
+                          padding: EdgeInsets.only(left: Sizes.w10),
+                          child: Container(
+                            child: CircleAvatar(
+                              radius: double.infinity,
+                              backgroundImage: NetworkImage(data['photo_url']),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                          flex: 3,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                top: Sizes.h10, right: Sizes.w15, left: Sizes.w20),
+                            child: Container(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${data['author']}',
+                                    style: TextStyle(
+                                        fontSize: Sizes.w22,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Divider(
+                                    height: Sizes.h3,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "${data['company']}",
+                                            style: TextStyle(
+                                                fontSize: Sizes.w15,
+                                                color: colorTheme(
+                                                    "${data['company']}")),
+                                          ),
+                                          Text(
+                                            "${data['betcode']}",
+                                            style: TextStyle(
+                                                fontSize: Sizes.w22,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            "${data['odds']}",
+                                            style: TextStyle(
+                                                fontSize: Sizes.w15,
+                                                fontWeight: FontWeight.normal),
+                                          ),
+                                        ],
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(right: Sizes.w50),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                              "${data['sports']}",
+                                              style: TextStyle(
+                                                  fontSize: Sizes.w15,
+                                                  color: Colors.grey),
+                                            ),
+                                            Text(
+                                              "${data['startdate']}",
+                                              style: TextStyle(
+                                                  fontSize: Sizes.w15,
+                                                  color: Colors.white),
+                                            ),
+                                            Text(
+                                              "${data['start']}",
+                                              style: TextStyle(
+                                                  fontSize: Sizes.w15,
+                                                  color: Colors.white),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ))
+                    ],
+                  )),Container(height: Sizes.h1,color: Colors.grey.withOpacity(.3),)
+            ],
           ),
         );
       },
@@ -163,7 +275,12 @@ class _PublicCodesState extends State<PublicCodes> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Center(child: Text('Post Slip')),
+            title: Center(
+                child: Text(
+              'Post Slip',
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, fontSize: Sizes.w25),
+            )),
             content: StatefulBuilder(
               builder: (context, StateSetter setState) {
                 return SingleChildScrollView(
@@ -191,6 +308,10 @@ class _PublicCodesState extends State<PublicCodes> {
                             },
                           ),
                         ),
+                        Divider(
+                          height: Sizes.h3,
+                          color: Colors.transparent,
+                        ),
                         Container(
                           child: DropdownButton<String>(
                             value: selectSports,
@@ -210,43 +331,60 @@ class _PublicCodesState extends State<PublicCodes> {
                             },
                           ),
                         ),
+                        Divider(
+                          height: Sizes.h3,
+                          color: Colors.transparent,
+                        ),
                         TextFormField(
+                          textCapitalization: TextCapitalization.characters,
                           controller: betcodeControl,
-                          decoration: InputDecoration(labelText: 'Bet Code'),
-                          // ignore: missing_return
+                          decoration:
+                              Decorations().formDecor('Bet Code', context),
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Please fill this entry';
                             }
                           },
                         ),
+                        Divider(
+                          height: Sizes.h3,
+                          color: Colors.transparent,
+                        ),
                         TextFormField(
                           controller: oddsControl,
                           keyboardType: TextInputType.number,
-                          decoration: InputDecoration(labelText: 'Bet Odd'),
-                          // ignore: missing_return
+                          decoration:
+                              Decorations().formDecor('Bet Odd', context),
                           validator: (value) {
                             if (value!.isEmpty) return 'Please fill this entry';
                           },
+                        ),
+                        Divider(
+                          height: Sizes.h3,
+                          color: Colors.transparent,
                         ),
                         DateTimePicker(
                           controller: dateControl,
                           type: DateTimePickerType.date,
                           firstDate: DateTime(now.year, now.month, now.day),
                           lastDate: DateTime(2300),
-                          dateLabelText: 'Earliest Game Date',
-                          // ignore: missing_return
+                          decoration: Decorations()
+                              .formDecor('Earliest Game Date', context),
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Please fill this entry';
                             }
                           },
                         ),
+                        Divider(
+                          height: Sizes.h3,
+                          color: Colors.transparent,
+                        ),
                         DateTimePicker(
                           controller: timeControl,
                           type: DateTimePickerType.time,
-                          timeLabelText: 'Earliest Game Time',
-                          // ignore: missing_return
+                          decoration: Decorations()
+                              .formDecor('Earliest Game Time', context),
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Please fill this entry';
@@ -260,27 +398,57 @@ class _PublicCodesState extends State<PublicCodes> {
               },
             ),
             actions: [
-              ElevatedButton(
-                child: Text('Submit'),
-                onPressed: () {
-                  var keyForm = _keyForm.currentState;
-                  if (keyForm!.validate()) {
-                    if (selectbetCompany == 'Select Platform') {
-                    } else if (selectSports == 'Select Sports') {
-                    } else {
-                      _uploadBet();
-                      keyForm.reset();
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    style: Decorations().buttonDecor(
+                        context: context,
+                        buttoncolor: Colors.blue,
+                        bordercurver: Sizes.w20,
+                        bordercolor: Colors.blue),
+                    child: Text(
+                      'Submit',
+                      style: TextStyle(fontSize: Sizes.w15),
+                    ),
+                    onPressed: () {
+                      var keyForm = _keyForm.currentState;
+                      if (keyForm!.validate()) {
+                        if (selectbetCompany == 'Select Platform') {
+                          setState(() {
+                            platformColor = Colors.red;
+                          });
+                        } else if (selectSports == 'Select Sports') {
+                          setState(() {
+                            sportsColor = Colors.red;
+                          });
+                        } else {
+                          _uploadBet();
+                          keyForm.reset();
+                          _reset();
+
+                          Navigator.pop(context);
+                        }
+                      }
+                    },
+                  ),
+                  VerticalDivider(),
+                  ElevatedButton(
+                    style: Decorations().buttonDecor(
+                        context: context,
+                        buttoncolor: Colors.blue,
+                        bordercurver: Sizes.w20,
+                        bordercolor: Colors.blue),
+                    child: Text(
+                      'Close',
+                      style: TextStyle(fontSize: Sizes.w15),
+                    ),
+                    onPressed: () {
                       _reset();
                       Navigator.pop(context);
-                    }
-                  }
-                },
-              ),
-              ElevatedButton(
-                child: Text('Close'),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+                    },
+                  )
+                ],
               )
             ],
           );
@@ -293,6 +461,7 @@ class _PublicCodesState extends State<PublicCodes> {
     if (user != null) {
       await stream.add({
         'author': user.displayName ?? 'Anonymous',
+        'photo_url': user.photoURL ?? 'https://placeholder.com/150',
         'author_id': user.uid,
         'company': selectbetCompany,
         'betcode': betcodeControl.text,
@@ -301,8 +470,6 @@ class _PublicCodesState extends State<PublicCodes> {
         'sports': selectSports,
         'start': timeControl.text,
         'startdate': dateControl.text,
-        // 'totalruntime':
-        // 'totalgames':
         'timestamp': Timestamp.now().toDate(),
       });
     }
@@ -312,6 +479,12 @@ class _PublicCodesState extends State<PublicCodes> {
     setState(() {
       selectbetCompany = 'Select Platform';
       selectSports = 'Select Sports';
+      sportsColor = Colors.white;
+      platformColor = Colors.white;
+      oddsControl.clear();
+      betcodeControl.clear();
+      dateControl.clear();
+      timeControl.clear();
     });
   }
 
