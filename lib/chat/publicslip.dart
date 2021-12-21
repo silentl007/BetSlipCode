@@ -185,7 +185,9 @@ class _PublicCodesState extends State<PublicCodes> {
                           flex: 3,
                           child: Padding(
                             padding: EdgeInsets.only(
-                                top: Sizes.h10, right: Sizes.w15, left: Sizes.w20),
+                                top: Sizes.h10,
+                                right: Sizes.w15,
+                                left: Sizes.w20),
                             child: Container(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -229,7 +231,8 @@ class _PublicCodesState extends State<PublicCodes> {
                                         ],
                                       ),
                                       Padding(
-                                        padding: EdgeInsets.only(right: Sizes.w50),
+                                        padding:
+                                            EdgeInsets.only(right: Sizes.w50),
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.end,
@@ -262,7 +265,11 @@ class _PublicCodesState extends State<PublicCodes> {
                             ),
                           ))
                     ],
-                  )),Container(height: Sizes.h1,color: Colors.grey.withOpacity(.3),)
+                  )),
+              Container(
+                height: Sizes.h1,
+                color: Colors.grey.withOpacity(.3),
+              )
             ],
           ),
         );
@@ -382,6 +389,8 @@ class _PublicCodesState extends State<PublicCodes> {
                         ),
                         DateTimePicker(
                           controller: timeControl,
+                          // use24HourFormat: false,
+                          locale: const Locale('en'),
                           type: DateTimePickerType.time,
                           decoration: Decorations()
                               .formDecor('Earliest Game Time', context),
@@ -390,6 +399,7 @@ class _PublicCodesState extends State<PublicCodes> {
                               return 'Please fill this entry';
                             }
                           },
+                          onChanged: (value){print(value);},
                         ),
                       ],
                     ),

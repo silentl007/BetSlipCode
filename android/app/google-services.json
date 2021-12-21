@@ -7,43 +7,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:810514184313:android:f87e471fffc1557b487ca8",
-        "android_client_info": {
-          "package_name": "com.example.BetSlipCode"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "810514184313-i1gn57t734imo60ds3djnlrdvd8k8ic0.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.BetSlipCode",
-            "certificate_hash": "9c68ce45f41c0762d019c39587571c4ff2dc51cc"
-          }
-        },
-        {
-          "client_id": "810514184313-bu3ufgg18u42jq5s9k4vvt0l3c5n3anm.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAR4dV-kGNWK8eYpxW88PJh-bMgJTgHei8"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "810514184313-bu3ufgg18u42jq5s9k4vvt0l3c5n3anm.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:810514184313:android:bee72d6e677a77fa487ca8",
         "android_client_info": {
           "package_name": "com.realm.coderealm"

@@ -120,10 +120,12 @@ class ChatMessageOther extends StatelessWidget {
                     textAlign: TextAlign.justify,
                     style: TextStyle(height: 1.2, fontSize: Sizes.w15),
                   ),
-                  Divider(height: Sizes.h3,),
+                  Divider(
+                    height: Sizes.h3,
+                    color: Colors.transparent,
+                  ),
                   Text(
                     format.format(data!['timestamp'].toDate()),
-                    
                     style: TextStyle(fontSize: Sizes.w10, color: Colors.red),
                   ),
                 ],
@@ -136,7 +138,6 @@ class ChatMessageOther extends StatelessWidget {
   }
 
   colorDecider(String letter) {
-    print(alphabets.length);
     for (var i = 0; i <= alphabets.length - 1; i++) {
       if (letter.toLowerCase() == alphabets[i]) {
         return colorList[i];

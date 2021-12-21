@@ -10,7 +10,7 @@ class ChatMessage extends StatelessWidget {
   var format = DateFormat('HH:mm a');
   @override
   Widget build(BuildContext context) {
-   Sizes().heightSizeCalc(context);
+    Sizes().heightSizeCalc(context);
     Sizes().widthSizeCalc(context);
     return Container(
         child: Row(
@@ -18,7 +18,7 @@ class ChatMessage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-           width: Sizes.w250,
+          width: Sizes.w250,
           margin: EdgeInsets.only(
             left: Sizes.w10,
             right: Sizes.w10,
@@ -38,7 +38,11 @@ class ChatMessage extends StatelessWidget {
                 data['value'],
                 textAlign: TextAlign.justify,
                 style: TextStyle(height: 1.2, fontSize: Sizes.w15),
-              ),Divider(height: Sizes.h3,),
+              ),
+              Divider(
+                height: Sizes.h3,
+                color: Colors.transparent,
+              ),
               Text(
                 format.format(data['timestamp'].toDate()),
                 style: TextStyle(fontSize: Sizes.w10, color: Colors.red),

@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:code_realm/adsense.dart';
 import 'package:code_realm/betscreen.dart';
 import 'package:code_realm/selector.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:code_realm/model.dart';
@@ -41,7 +43,10 @@ class _HomeSelectState extends State<HomeSelect> {
     bannerLoad();
   }
 
+  
+
   getCompanies() async {
+    FirebaseMessaging.instance.subscribeToTopic("coderealm");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var link = Uri.parse('https://betslipcode.herokuapp.com/get/company');
     try {
@@ -167,6 +172,14 @@ class _HomeSelectState extends State<HomeSelect> {
     );
   }
 
+  getDeviceToken() async {
+    String? deviceToken;
+    if (Platform.isAndroid) {
+      deviceToken = await FirebaseMessaging.instance.getToken();
+      print('------------------------------------------------$deviceToken');
+    }
+  }
+
   _gesture(Widget widget) {
     return GestureDetector(
       child: widget,
@@ -235,7 +248,9 @@ class _HomeSelectState extends State<HomeSelect> {
                       fontSize: Sizes.w20,
                       fontWeight: FontWeight.bold),
                 ),
-                onPressed: () => proceed(),
+                onPressed: () {
+                  proceed();
+                },
               ),
             ),
             Divider(

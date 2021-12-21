@@ -12,7 +12,9 @@ dependencies:
   google_mobile_ads: ^0.12.1+1
   provider: ^4.3.3
   firebase_auth: ^1.1.1
-  firebase_core: ^1.0.4
+  firebase_core: ^1.10.6
+  firebase_messaging: ^11.2.4
+  flutter_local_notifications: ^9.0.0
   cupertino_icons: ^1.0.0
   http: ^0.13.1
   fluttertoast: ^8.0.8
@@ -23,6 +25,8 @@ dependencies:
   intl: ^0.17.0
   date_time_picker: "^2.0.0"
   scrollable_positioned_list: ^0.2.3
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:
