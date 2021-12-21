@@ -18,7 +18,8 @@ void main() async {
   await logged();
   await Authenticate().initialize();
   MobileAds.instance.initialize();
-  // FirebaseMessaging.onBackgroundMessage(backgroundHandler);
+  FirebaseMessaging.instance.subscribeToTopic("coderealm");
+  FirebaseMessaging.onBackgroundMessage(backgroundHandler);
   runApp(
     MyApp(),
   );
