@@ -11,6 +11,7 @@ import 'package:flutter/rendering.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class HomeSelect extends StatefulWidget {
   @override
@@ -46,9 +47,10 @@ class _HomeSelectState extends State<HomeSelect> {
   
 
   getCompanies() async {
+    await dotenv.load(fileName: 'file.env');
     FirebaseMessaging.instance.subscribeToTopic("coderealm");
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var link = Uri.parse('https://betslipcode.herokuapp.com/get/company');
+    var link = Uri.parse('${dotenv.env['api_prefix']}/get/company');
     try {
       var getList = await http.get(link);
       if (getList.statusCode == 200) {

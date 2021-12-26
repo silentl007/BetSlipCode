@@ -3,6 +3,7 @@ import 'package:code_realm/adsense.dart';
 import 'package:code_realm/model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
@@ -57,7 +58,8 @@ class _BetDataScreenState extends State<BetDataScreen> {
   }
 
   _getCodes() async {
-    Uri link = Uri.parse('https://betslipcode.herokuapp.com/get/code');
+    await dotenv.load(fileName: 'file.env');
+    Uri link = Uri.parse('${dotenv.env['api_prefix']}/get/code');
     try {
       var getCodes = await http.get(link);
       if (getCodes.statusCode == 200) {

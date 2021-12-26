@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:code_realm/auth/authproviderbase.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class Authenticate extends AuthBase {
@@ -8,13 +9,14 @@ class Authenticate extends AuthBase {
   Future<FirebaseApp> initialize() async {
     // values are found in your firebase app details firebase.console.com
     // google-services.json file is downloaded from created firebase app
+    await dotenv.load(fileName: 'file.env');
     return await Firebase.initializeApp(
-        name: 'BetSlipChat',
+        name: '${dotenv.env['firebase_appname']}',
         options: FirebaseOptions(
-            apiKey: 'AIzaSyAR4dV-kGNWK8eYpxW88PJh-bMgJTgHei8',
-            appId: '1:810514184313:android:f87e471fffc1557b487ca8',
-            messagingSenderId: '810514184313',
-            projectId: 'betslipchat'));
+            apiKey: '${dotenv.env['firebase_apikey']}',
+            appId: '${dotenv.env['firebase_appId']}',
+            messagingSenderId: '${dotenv.env['firebase_messagingSenderId']}',
+            projectId: '${dotenv.env['firebase_projectId']}'));
   }
 
   @override

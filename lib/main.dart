@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_background/flutter_background.dart';
 
 bool? loggedIn;
 Future<void> backgroundHandler(RemoteMessage message) async {
@@ -30,7 +31,7 @@ logged() async {
   loggedIn = prefs.getBool('isLogged') ?? false;
 }
 
-class MyApp extends StatefulWidget {
+ class MyApp extends StatefulWidget {
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -40,7 +41,28 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     notificationFirebase();
+    // runbackground();
     LocalNotificationService.initialize(context);
+  }
+
+  runbackground() async {
+    // this is for persistent notification at the top
+    final androidConfig = FlutterBackgroundAndroidConfig(
+      notificationTitle: "CodeRealm",
+      notificationText: "Running at the back",
+      notificationImportance: AndroidNotificationImportance.Default,
+      notificationIcon: AndroidResource(
+          name: 'ic_launcher',
+          defType: 'drawable'), // Default is ic_launcher from folder mipmap
+    );
+
+    bool hasPermissions = await FlutterBackground.hasPermissions;
+    if (hasPermissions) {
+      await FlutterBackground.enableBackgroundExecution();
+    } else {
+      await FlutterBackground.initialize(androidConfig: androidConfig);
+      await FlutterBackground.enableBackgroundExecution();
+    }
   }
 
   notificationFirebase() async {
