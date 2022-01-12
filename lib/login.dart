@@ -2,6 +2,7 @@ import 'package:code_realm/home.dart';
 import 'package:code_realm/model.dart';
 import 'package:flutter/material.dart';
 import 'package:code_realm/auth/googleauth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
@@ -10,9 +11,6 @@ class Login extends StatefulWidget {
 }
 
 class LoginState extends State<Login> {
- 
-
-
   String logging = 'login';
 
   @override
@@ -105,18 +103,28 @@ class LoginState extends State<Login> {
       setState(() {
         logging = 'trying';
       });
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setBool('isLogged', true);
-      await Authenticate().signInWithGoogle();
-      return Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (BuildContext context) => HomeSelect()));
+       await Authenticate().signInWithGoogle();
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setBool('isLogged', true);
+        return Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (BuildContext context) => HomeSelect()));
+      // }
     } catch (error) {
       print('---------- error initialize----------------');
       print(error);
       print('---------- error here----------------');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setBool('isLogged', false);
       setState(() {
         logging = 'login';
       });
+      Fluttertoast.showToast(
+          msg: 'An error occurred: $error',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.black,
+          textColor: Colors.white,
+          fontSize: Sizes.w16);
     }
   }
 }

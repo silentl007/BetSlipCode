@@ -10,6 +10,7 @@ import 'package:code_realm/model.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
+import 'package:new_version/new_version.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -21,7 +22,8 @@ class HomeSelect extends StatefulWidget {
 class _HomeSelectState extends State<HomeSelect> {
   BannerAd? banner;
   BannerAd? bannerTop;
-  bool adTapped = false;
+  bool adTapped =
+      false; // changed to true for playstore, normal value is false, change to false when approved
   bool loaded = false;
   Offset? bannerOffset;
   final GlobalKey bannerKey = GlobalKey();
@@ -42,9 +44,13 @@ class _HomeSelectState extends State<HomeSelect> {
     super.initState();
     getComp = getCompanies();
     bannerLoad();
+    updateAlert();
   }
 
-  
+  updateAlert() async {
+    final checkVersion = NewVersion();
+    checkVersion.showAlertIfNecessary(context: context);
+  }
 
   getCompanies() async {
     await dotenv.load(fileName: 'file.env');

@@ -37,7 +37,7 @@ class _BetScreenState extends State<BetScreen> {
         initialIndex: 0,
         child: Scaffold(
           floatingActionButton: FloatingActionButton(
-              backgroundColor: Colors.white,
+              backgroundColor: colorCode,
               child: Icon(Icons.home),
               onPressed: () => Navigator.pushAndRemoveUntil(
                   context,
@@ -136,8 +136,8 @@ class _BetScreenState extends State<BetScreen> {
       });
     } else {
       setState(() {
-        colorCode = Colors.white;
-        colorContainer = Colors.white;
+        colorCode = Colors.black;
+        colorContainer = Colors.black;
       });
     }
   }
