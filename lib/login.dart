@@ -1,5 +1,6 @@
 import 'package:code_realm/home.dart';
 import 'package:code_realm/model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:code_realm/auth/googleauth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -97,13 +98,18 @@ class LoginState extends State<Login> {
       ),
     );
   }
+  // signin (){
+  //   Navigator.of(context).pushReplacement(
+  //           MaterialPageRoute(builder: (BuildContext context) => HomeSelect()));
+  // }
 
   signin() async {
     try {
       setState(() {
         logging = 'trying';
       });
-       await Authenticate().signInWithGoogle();
+     // ignore: unused_local_variable
+     UserCredential data =  await Authenticate().signInWithGoogle();
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setBool('isLogged', true);
         return Navigator.of(context).pushReplacement(

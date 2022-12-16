@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 // ignore: must_be_immutable
 class ChatMessage extends StatelessWidget {
   final int index;
-  final Map<String, dynamic> data;
+  final Map data;
   ChatMessage({required this.data, required this.index});
   var format = DateFormat('HH:mm a');
   @override

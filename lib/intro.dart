@@ -20,7 +20,6 @@ class _IntroPageState extends State<IntroPage> {
       onDone: () => _onIntroEnd(),
       //onSkip: () => _onIntroEnd(context), // You can override onSkip callback
       showSkipButton: true,
-      skipFlex: 0,
       nextFlex: 0,
       isBottomSafeArea: true,
       isTopSafeArea: true,

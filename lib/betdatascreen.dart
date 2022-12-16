@@ -1,7 +1,7 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:code_realm/adsense.dart';
 import 'package:code_realm/model.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -76,29 +76,20 @@ class _BetDataScreenState extends State<BetDataScreen> {
   }
 
   void interLoad() {
-    interAd = InterstitialAd(
-      adUnitId: AdSense.interstitialAdUnitID,
-      request: AdRequest(),
-      listener: AdListener(
-        onAdLoaded: (ad) {
-          print('---------------------------------------');
-          print('Ad loaded: ${ad.adUnitId}');
-          interAd!.show();
-          print('---------------------------------------');
-        },
-        onAdFailedToLoad: (ad, error) {
-          print('---------------------------------------');
-          print('Add error: ${ad.adUnitId}, the error: $error');
-          print('---------------------------------------');
-        },
-      ),
-    );
-    interAd!.load();
+    InterstitialAd.load(
+        request: AdRequest(),
+        adUnitId: AdSense.interstitialAdUnitID,
+        adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
+          interAd = ad;
+           interAd!.show();
+        }, onAdFailedToLoad: (error) {
+          interAd = null;
+        }));
   }
 
   @override
   void dispose() {
-    interAd?.dispose();
+    interAd!.dispose();
     super.dispose();
   }
 
@@ -143,7 +134,9 @@ class _BetDataScreenState extends State<BetDataScreen> {
                                 children: [
                                   Padding(
                                     padding: EdgeInsets.only(
-                                        top:Sizes.h20, left: Sizes.w40, right: Sizes.w40),
+                                        top: Sizes.h20,
+                                        left: Sizes.w40,
+                                        right: Sizes.w40),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -194,8 +187,7 @@ class _BetDataScreenState extends State<BetDataScreen> {
                                               '${snapshot.data[index]['odds']}',
                                               style: TextStyle(
                                                   fontSize: Sizes.w18,
-                                                  fontWeight:
-                                                      FontWeight.bold),
+                                                  fontWeight: FontWeight.bold),
                                             ),
                                             Text(
                                               'ODDS',

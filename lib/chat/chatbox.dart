@@ -83,7 +83,8 @@ class _ChatBoxState extends State<ChatBox> {
       itemPositionsListener: itemPositionsListener,
       itemCount: messages.length,
       itemBuilder: (context, index) {
-        final data = messages[index].data();
+        Map data = Map<String, dynamic>.from(
+            messages[index].data() as Map<dynamic, dynamic>);
         final user = FirebaseAuth.instance.currentUser;
         if (user != null && user.uid == data['author_id']) {
           return Dismissible(
@@ -127,10 +128,9 @@ class _ChatBoxState extends State<ChatBox> {
                 color: Colors.white,
               ),
               hintText: 'Type a message',
-              focusedBorder:
-                  UnderlineInputBorder(borderSide: BorderSide.none),
+              focusedBorder: UnderlineInputBorder(borderSide: BorderSide.none),
             ),
-            onChanged: (value){
+            onChanged: (value) {
               _message = value;
             },
           ),
@@ -202,8 +202,8 @@ class _ChatBoxState extends State<ChatBox> {
 
   bool shouldShowAvatar(int indx, List<QueryDocumentSnapshot> messages) {
     if (indx == 0) return true;
-    final previousID = messages[indx - 1].data()['author_id'];
-    final authorID = messages[indx].data()['author_id'];
+    final previousID = messages[indx - 1]['author_id'];
+    final authorID = messages[indx]['author_id'];
     return authorID != previousID;
   }
 

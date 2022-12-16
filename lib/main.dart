@@ -55,7 +55,6 @@ class _MyAppState extends State<MyApp> {
           name: 'ic_launcher',
           defType: 'drawable'), // Default is ic_launcher from folder mipmap
     );
-
     bool hasPermissions = await FlutterBackground.hasPermissions;
     if (hasPermissions) {
       await FlutterBackground.enableBackgroundExecution();

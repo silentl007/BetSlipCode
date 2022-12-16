@@ -3,9 +3,7 @@ import 'package:code_realm/adsense.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:code_realm/model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -64,24 +62,19 @@ class _PublicCodesState extends State<PublicCodes> {
   }
 
   void interLoad() {
-    interAd = InterstitialAd(
-      adUnitId: AdSense.interstitialAdUnitID,
-      request: AdRequest(),
-      listener: AdListener(
-        onAdLoaded: (ad) {
-          print('---------------------------------------');
-          print('Ad loaded: ${ad.adUnitId}');
-          print('---------------------------------------');
-        },
-        onAdFailedToLoad: (ad, error) {
-          print('---------------------------------------');
-          print('Add error: ${ad.adUnitId}, the error: $error');
-          print('---------------------------------------');
-        },
-      ),
-    );
-    interAd!.load();
-    loaded = true;
+    InterstitialAd.load(
+        request: AdRequest(),
+        adUnitId: AdSense.interstitialAdUnitID,
+        adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
+          interAd = ad;
+          loaded = true;
+        }, onAdFailedToLoad: (error) {
+          interAd = null;
+          loaded = false;
+        }));
+    if (interAd != null) {
+      interAd!.show();
+    }
   }
 
   actionButton() {
@@ -156,11 +149,11 @@ class _PublicCodesState extends State<PublicCodes> {
     return ListView.builder(
       itemCount: publicbets.length,
       itemBuilder: (context, index) {
-        final data = publicbets[index].data();
+        final data = publicbets[index];
         // create a dismissable to remove an entry
         return GestureDetector(
           onTap: () {
-            _toastCopyClipBoard(data['betcode']);
+            _toastCopyClipBoard(data['betcode']!);
           },
           child: Column(
             children: [
@@ -351,6 +344,7 @@ class _PublicCodesState extends State<PublicCodes> {
                             if (value!.isEmpty) {
                               return 'Please fill this entry';
                             }
+                            return null;
                           },
                         ),
                         Divider(
@@ -363,7 +357,10 @@ class _PublicCodesState extends State<PublicCodes> {
                           decoration:
                               Decorations().formDecor('Bet Odd', context),
                           validator: (value) {
-                            if (value!.isEmpty) return 'Please fill this entry';
+                            if (value!.isEmpty) {
+                              return 'Please fill this entry';
+                            }
+                            return null;
                           },
                         ),
                         Divider(
@@ -381,6 +378,7 @@ class _PublicCodesState extends State<PublicCodes> {
                             if (value!.isEmpty) {
                               return 'Please fill this entry';
                             }
+                            return null;
                           },
                         ),
                         Divider(
@@ -398,8 +396,11 @@ class _PublicCodesState extends State<PublicCodes> {
                             if (value!.isEmpty) {
                               return 'Please fill this entry';
                             }
+                            return null;
                           },
-                          onChanged: (value){print(value);},
+                          onChanged: (value) {
+                            print(value);
+                          },
                         ),
                       ],
                     ),

@@ -18,29 +18,39 @@ class _ChoiceState extends State<Choice> {
         shrinkWrap: true,
         itemCount: widget.companies.length,
         itemBuilder: (BuildContext context, int index) {
-          return Container(
-            padding: EdgeInsets.only(left: 70, right: 70),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(widget.companies[index].company, style: textStyling(),),
-                    Checkbox(
-                      checkColor: Colors.white,
-                      fillColor: MaterialStateProperty.all(Colors.blue),
-                        value: widget.companies[index].isSelected,
-                        onChanged: (s) {
-                          widget.companies[index].isSelected =
-                              !widget.companies[index].isSelected;
-                          setState(() {});
-                        }),
-                  ],
-                ),
-                Divider(
-                  color: Colors.grey,
-                )
-              ],
+          return GestureDetector(
+            onTap: () {
+              widget.companies[index].isSelected =
+                  !widget.companies[index].isSelected;
+              setState(() {});
+            },
+            child: Container(
+              padding: EdgeInsets.only(left: 70, right: 70),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        widget.companies[index].company,
+                        style: textStyling(),
+                      ),
+                      Checkbox(
+                          checkColor: Colors.white,
+                          fillColor: MaterialStateProperty.all(Colors.blue),
+                          value: widget.companies[index].isSelected,
+                          onChanged: (s) {
+                            widget.companies[index].isSelected =
+                                !widget.companies[index].isSelected;
+                            setState(() {});
+                          }),
+                    ],
+                  ),
+                  Divider(
+                    color: Colors.grey,
+                  )
+                ],
+              ),
             ),
           );
         },

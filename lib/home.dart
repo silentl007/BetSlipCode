@@ -4,10 +4,10 @@ import 'package:code_realm/adsense.dart';
 import 'package:code_realm/betscreen.dart';
 import 'package:code_realm/selector.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/gestures.dart';
+// import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:code_realm/model.dart';
-import 'package:flutter/rendering.dart';
+// import 'package:flutter/rendering.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:http/http.dart' as http;
 import 'package:new_version/new_version.dart';
@@ -20,10 +20,10 @@ class HomeSelect extends StatefulWidget {
 }
 
 class _HomeSelectState extends State<HomeSelect> {
-  BannerAd? banner;
-  BannerAd? bannerTop;
+  late BannerAd banner;
+  late BannerAd bannerTop;
   bool adTapped =
-      false; // changed to true for playstore, normal value is false, change to false when approved
+      true; // changed to true for playstore, normal value is false, change to false when approved
   bool loaded = false;
   Offset? bannerOffset;
   final GlobalKey bannerKey = GlobalKey();
@@ -34,8 +34,8 @@ class _HomeSelectState extends State<HomeSelect> {
   List<String> prefsSportsList = [];
   @override
   void dispose() {
-    banner?.dispose();
-    bannerTop?.dispose();
+    banner.dispose();
+    bannerTop.dispose();
     super.dispose();
   }
 
@@ -44,7 +44,7 @@ class _HomeSelectState extends State<HomeSelect> {
     super.initState();
     getComp = getCompanies();
     bannerLoad();
-    updateAlert();
+    // updateAlert();
   }
 
   updateAlert() async {
@@ -59,9 +59,11 @@ class _HomeSelectState extends State<HomeSelect> {
     var link = Uri.parse('${dotenv.env['api_prefix']}/get/company');
     try {
       var getList = await http.get(link);
+      print('--' * 10);
+      print(getList.body);
+      print('--' * 10);
       if (getList.statusCode == 200) {
         var decode = jsonDecode(getList.body);
-
         for (var data in decode[0]['company']) {
           prefsBetCompanyList.add(data);
           betCompany.add(Check(data));
@@ -83,7 +85,7 @@ class _HomeSelectState extends State<HomeSelect> {
         adUnitId: AdSense.bannerAdUnitIDTop,
         size: AdSize.fullBanner,
         request: AdRequest(keywords: ['bet', 'gamble']),
-        listener: AdListener(
+        listener: BannerAdListener(
             onAdLoaded: (_) {},
             onAdFailedToLoad: (ad, error) {
               print('---------------------------------------');
@@ -94,7 +96,7 @@ class _HomeSelectState extends State<HomeSelect> {
         adUnitId: AdSense.bannerAdUnitID,
         size: AdSize.fullBanner,
         request: AdRequest(keywords: ['bet', 'gamble']),
-        listener: AdListener(onAdLoaded: (_) {
+        listener: BannerAdListener(onAdLoaded: (_) {
           setState(() {
             loaded = true;
           });
@@ -103,8 +105,8 @@ class _HomeSelectState extends State<HomeSelect> {
           print('Add error: ${ad.adUnitId}, the error: $error');
           print('---------------------------------------');
         }));
-    banner!.load();
-    bannerTop!.load();
+    banner.load();
+    bannerTop.load();
   }
 
   bannerDisplay(double height, BannerAd ad) {
@@ -207,7 +209,7 @@ class _HomeSelectState extends State<HomeSelect> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _gesture(bannerDisplay(Sizes.h70, bannerTop!)),
+            _gesture(bannerDisplay(Sizes.h70, bannerTop)),
             Expanded(child: Choice(betcomp)),
             Container(
               decoration: BoxDecoration(
@@ -264,7 +266,7 @@ class _HomeSelectState extends State<HomeSelect> {
             Divider(
               height: Sizes.h40,
             ),
-            _gesture(bannerDisplay(Sizes.h70, banner!))
+            _gesture(bannerDisplay(Sizes.h70, banner))
           ],
         ),
       ),
